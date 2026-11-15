@@ -1700,6 +1700,11 @@ export default function App() {
     await fetchSettingsAndScan();
   };
 
+  const handleCancelScan = async () => {
+    await apiFetch('/api/scan/cancel', { method: 'POST' });
+    await fetchSettingsAndScan();
+  };
+
   useEffect(() => {
     if (!canEditStations && activeTab === 'curation') {
       setActiveTab('guide');
@@ -2050,6 +2055,7 @@ export default function App() {
             onAddLibrary={handleAddLibrary}
             onRemoveLibrary={handleRemoveLibrary}
             onTriggerScan={handleTriggerScan}
+            onCancelScan={handleCancelScan}
             onStationsChanged={handleStationsChanged}
             onBackupRestored={async () => {
               await fetchSettingsAndScan();
