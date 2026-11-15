@@ -2,7 +2,6 @@ import express from 'express';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createServer as createViteServer } from 'vite';
 import { CONFIG_DIR, MUSIC_DIR, SERVER_TZ } from './src/server/config.ts';
 import { initDatabase } from './src/server/db/index.ts';
 import { scheduleEngine } from './src/server/engine/ScheduleEngine.ts';
@@ -21,8 +20,13 @@ import { ensureDemoLibraryIfEmpty } from './src/server/scanner/SampleLibrarySeed
 import { scannerService } from './src/server/scanner/ScannerService.ts';
 import { applyAutoBackupScheduler } from './src/server/services/BackupService.ts';
 
-const currentFile = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(currentFile);
+// In the packaged desktop app this file is bundled as CommonJS, where
+// import.meta.url is empty but __dirname exists. Under plain Node (Docker/dev)
+// it runs as an ES module, where the opposite is true. Support both.
+const baseDir =
+  typeof __dirname !== 'undefined'
+    ? __dirname
+    : path.dirname(fileURLToPath(import.meta.url));
 
 async function startServer(customPort?: number) {
   // 1. Initialize SQLite schema in /config
@@ -50,7 +54,7 @@ async function startServer(customPort?: number) {
   }
 
   const app = express();
-  const PORT = customPort || Number(process.env.PORT) || 3000;
+  const PORT = customPort || Number(process.env.PORT) || 8484;
 
   app.use(express.json({ limit: '150mb' }));
   app.use(loadUserSession);
@@ -65,6 +69,9 @@ async function startServer(customPort?: number) {
 
   // Vite middleware in development, static files in production
   if (process.env.NODE_ENV !== 'production' && !process.env.ELECTRON_PROD) {
+    // Vite is a development-only tool, so load it only when actually needed.
+    // Packaged builds (Docker, desktop) do not ship it.
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
@@ -73,8 +80,8 @@ async function startServer(customPort?: number) {
   } else {
     const possibleDistPaths = [
       path.join(process.cwd(), 'dist'),
-      path.join(__dirname, 'dist'),
-      path.join(__dirname, '..', 'dist'),
+      path.join(baseDir, 'dist'),
+      path.join(baseDir, '..', 'dist'),
     ];
     const distPath = possibleDistPaths.find((p) => {
       try {

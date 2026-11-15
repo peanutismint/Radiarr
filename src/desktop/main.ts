@@ -28,7 +28,7 @@ let tray: Tray | null = null;
 let isQuitting = false;
 let hasShownTrayTip = false;
 
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT) || 8484;
 const SERVER_URL = `http://127.0.0.1:${PORT}`;
 
 // Window state management
@@ -289,6 +289,7 @@ async function waitForServer(url: string, maxRetries = 40): Promise<void> {
       await new Promise((r) => setTimeout(r, 250));
     }
   }
+  throw new Error(`Radiarr server did not respond at ${url}`);
 }
 
 app.on('second-instance', () => {
@@ -300,20 +301,34 @@ app.on('second-instance', () => {
 });
 
 app.whenReady().then(async () => {
-  // Start server if needed
+  // Start the embedded server unless one is already answering on this port.
+  // (waitForServer throws when nothing responds, which is our cue to start it.)
   try {
     await waitForServer(`${SERVER_URL}/api/settings`, 2);
   } catch {
     console.log('Starting embedded Radiarr server...');
+    // Installed copies must serve the pre-built web UI rather than
+    // trying to start the development server.
+    if (app.isPackaged) {
+      process.env.ELECTRON_PROD = '1';
+    }
     try {
       await startServer(PORT);
+      // Ensure server is accepting requests before window renders
+      await waitForServer(`${SERVER_URL}/api/settings`, 40);
     } catch (e) {
-      console.warn('Failed to start server directly, proceeding:', e);
+      console.error('Failed to start Radiarr server:', e);
+      dialog.showErrorBox(
+        'Radiarr could not start',
+        `The built-in Radiarr server failed to start on port ${PORT}.\n\n${
+          e instanceof Error ? e.message : String(e)
+        }`
+      );
+      isQuitting = true;
+      app.quit();
+      return;
     }
   }
-
-  // Ensure server is accepting requests before window renders
-  await waitForServer(`${SERVER_URL}/api/settings`, 25);
 
   createWindow();
   createTray();

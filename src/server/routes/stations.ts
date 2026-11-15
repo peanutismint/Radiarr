@@ -55,7 +55,7 @@ stationsRouter.all('/integrations/voice-play', (req, res) => {
     typeof protoHeader === 'string' && protoHeader.trim() !== ''
       ? protoHeader.split(',')[0].trim()
       : req.protocol || 'http';
-  const host = req.get('host') || 'localhost:3000';
+  const host = req.get('host') || 'localhost:8484';
   const streamUrl = `${proto}://${host}/api/stations/${encodeURIComponent(matched.id)}/stream.mp3`;
 
   res.json({
