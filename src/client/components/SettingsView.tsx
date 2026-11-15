@@ -30,6 +30,7 @@ import {
   Shuffle,
   SlidersHorizontal,
   Sparkles,
+  Square,
   Star,
   Sun,
   Trash2,
@@ -70,6 +71,7 @@ interface SettingsViewProps {
   onAddLibrary: (name: string, path: string) => Promise<void>;
   onRemoveLibrary: (libraryId: string) => Promise<void>;
   onTriggerScan: (libraryId?: string) => Promise<void>;
+  onCancelScan: () => Promise<void>;
   onStationsChanged?: () => void;
   onBackupRestored?: () => Promise<void> | void;
   stations?: StationWithStats[];
@@ -87,6 +89,7 @@ export function SettingsView({
   onAddLibrary,
   onRemoveLibrary,
   onTriggerScan,
+  onCancelScan,
   onBackupRestored,
   stations,
 }: SettingsViewProps) {
@@ -2042,13 +2045,29 @@ radiarr_play_${scriptSlug}:
           {/* Live Scan Progress Bar if scanning */}
           {progress?.isScanning && (
             <div className="px-5 py-3 bg-indigo-50 dark:bg-indigo-950/40 border-b border-indigo-200 dark:border-indigo-900/60 space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center justify-between gap-3 text-xs">
                 <span className="font-medium text-indigo-800 dark:text-indigo-200">
-                  Scanning {progress.currentLibrary || 'libraries'}...
+                  {progress.isCancelling
+                    ? 'Stopping scan, finishing the files in progress...'
+                    : `Scanning ${progress.currentLibrary || 'libraries'}...`}
                 </span>
-                <span className="font-mono tabular-nums text-indigo-700 dark:text-indigo-300">
-                  {progress.filesProcessed} / {progress.filesTotal}
-                </span>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="font-mono tabular-nums text-indigo-700 dark:text-indigo-300">
+                    {progress.filesTotal > 0
+                      ? `${progress.filesProcessed} / ${progress.filesTotal}`
+                      : 'Finding files...'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => void onCancelScan()}
+                    disabled={progress.isCancelling}
+                    title="Stop the scan. Tracks imported so far are kept, and the next scan picks up where this one left off."
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-rose-300 dark:border-rose-800 bg-white dark:bg-zinc-900 hover:bg-rose-50 dark:hover:bg-rose-950/40 disabled:opacity-50 text-rose-700 dark:text-rose-300 text-xs font-medium transition cursor-pointer whitespace-nowrap"
+                  >
+                    <Square className="w-3 h-3 fill-current" />
+                    <span>{progress.isCancelling ? 'Stopping...' : 'Stop scan'}</span>
+                  </button>
+                </div>
               </div>
               <div className="w-full h-1.5 rounded-full bg-indigo-200 dark:bg-indigo-900 overflow-hidden">
                 <div
@@ -2194,7 +2213,10 @@ radiarr_play_${scriptSlug}:
                   localLibraries.map((lib) => {
                     const isScanningThisLib =
                       progress?.isScanning && progress.currentLibrary === lib.name;
-                    const isCustomLib = lib.id.startsWith('custom-');
+                    // Folders auto-discovered inside Docker's /music would just be
+                    // re-added, so only those have no remove button.
+                    const isRemovableLib =
+                      lib.removable ?? lib.id.startsWith('custom-');
 
                     return (
                       <div
@@ -2241,7 +2263,7 @@ radiarr_play_${scriptSlug}:
                             </span>
                           </button>
 
-                          {isCustomLib && (
+                          {isRemovableLib && (
                             <button
                               type="button"
                               onClick={() => void onRemoveLibrary(lib.id)}
@@ -2577,6 +2599,14 @@ radiarr_play_${scriptSlug}:
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-xs font-semibold text-zinc-600 dark:text-zinc-400">
                   Last Scan Summary ({formatTimestamp(latestRun.finishedAt || latestRun.startedAt)})
+                  {latestRun.status === 'cancelled' && (
+                    <span
+                      className="ml-2 font-medium text-amber-600 dark:text-amber-400"
+                      title="Tracks imported before the stop were kept. Scan again to pick up where it left off."
+                    >
+                      Stopped early
+                    </span>
+                  )}
                 </span>
                 <span className="text-xs text-zinc-600 dark:text-zinc-300 tabular-nums">
                   <strong>{overview?.totals.tracks ?? 0}</strong> tracks &middot;{' '}

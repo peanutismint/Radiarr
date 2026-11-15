@@ -25,5 +25,12 @@ export interface LibraryWalkResult {
 export interface MusicSource {
   readonly sourceType: 'local' | 'plex';
   discoverLibraries(): Promise<DiscoveredLibrary[]>;
-  walkLibrary(libraryPath: string): Promise<LibraryWalkResult>;
+  /**
+   * `shouldAbort` is polled while walking so a long crawl (e.g. a NAS share)
+   * can be stopped early. An aborted walk returns a partial result.
+   */
+  walkLibrary(
+    libraryPath: string,
+    shouldAbort?: () => boolean
+  ): Promise<LibraryWalkResult>;
 }
