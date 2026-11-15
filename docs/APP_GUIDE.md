@@ -109,5 +109,5 @@ Radiarr is available as a standalone desktop application with zero container or 
 - **Native OS Folder Chooser**:
   - Under **Settings → Libraries → Local Folders**, clicking **Browse...** opens your native Windows File Explorer, macOS Finder, or Linux file chooser dialog to select music folders directly from your local disks or external USB drives.
 - **Multi-Device LAN Streaming**:
-  - The desktop app runs an embedded server on your PC or Mac. Other devices on your local network (smartphones, tablets, car head units, or IPTV receivers) can tune into `http://<YOUR-PC-IP>:3000` to stream your live radio channels.
+  - The desktop app runs an embedded server on your PC or Mac. Other devices on your local network (smartphones, tablets, car head units, or IPTV receivers) can tune into `http://<YOUR-PC-IP>:8484` to stream your live radio channels.
 

@@ -12,7 +12,7 @@ function getBaseUrl(req: Request): string {
     typeof protoHeader === 'string' && protoHeader.trim() !== ''
       ? protoHeader.split(',')[0].trim()
       : req.protocol || 'http';
-  const host = req.get('host') || 'localhost:3000';
+  const host = req.get('host') || 'localhost:8484';
   return `${proto}://${host}`;
 }
 
