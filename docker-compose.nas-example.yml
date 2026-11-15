@@ -1,0 +1,39 @@
+# Radiarr - Example Docker Compose for Remote SMB / CIFS Network Storage
+# Use this configuration if you want Docker to mount your network share directly.
+# Copy or rename to docker-compose.yml and configure your NAS connection.
+
+services:
+  radiarr:
+    image: radiarr:latest
+    build:
+      context: .
+      dockerfile: radiarr.dockerfile
+    container_name: radiarr
+    restart: unless-stopped
+    ports:
+      - "8484:8484"
+    environment:
+      - PORT=8484
+      - TZ=UTC
+      - TRANSCODE_BITRATE_KBPS=192
+      - TRANSCODE_CACHE_MAX_MB=2048
+      - STREAM_BITRATE_KBPS=192
+    volumes:
+      - ./config:/config
+      - nas_albums:/music/albums:ro
+      - nas_singles:/music/singles:ro
+
+volumes:
+  nas_albums:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "username=${RADIARR_NAS_USER:-admin},password=${RADIARR_NAS_PASSWORD:-},vers=3.0,ro,iocharset=utf8"
+      device: "//${RADIARR_NAS_HOST:-192.168.1.50}/Music/Albums"
+
+  nas_singles:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "username=${RADIARR_NAS_USER:-admin},password=${RADIARR_NAS_PASSWORD:-},vers=3.0,ro,iocharset=utf8"
+      device: "//${RADIARR_NAS_HOST:-192.168.1.50}/Music/Singles"
