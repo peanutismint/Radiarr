@@ -242,6 +242,11 @@ export interface LibraryInfo {
   trackCount: number;
   albumCount: number;
   artistCount: number;
+  /**
+   * False only for folders auto-discovered inside a managed music root
+   * (Docker's /music), which would simply be re-added on the next refresh.
+   */
+  removable: boolean;
 }
 
 export interface UnreadableFileReport {
@@ -260,6 +265,8 @@ export interface TagProblemTrack {
 
 export interface ScanProgress {
   isScanning: boolean;
+  /** True once a stop has been requested and the scan is winding down. */
+  isCancelling: boolean;
   currentLibrary: string | null;
   filesProcessed: number;
   filesTotal: number;
@@ -270,7 +277,7 @@ export interface ScanRunSummary {
   id: number;
   startedAt: number;
   finishedAt: number | null;
-  status: 'running' | 'completed' | 'failed';
+  status: 'running' | 'completed' | 'failed' | 'cancelled';
   tracksTotal: number;
   albumsTotal: number;
   artistsTotal: number;

@@ -5,6 +5,9 @@
 
 [![Version](https://img.shields.io/badge/version-v0.8.0-indigo.svg)](https://github.com/peanutismint/radiarr/releases)
 [![Platform](https://img.shields.io/badge/platform-Docker%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-emerald.svg)](#install)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+
+**[▶ Try the live demo](https://peanutismint.github.io/Radiarr/)** in your browser, no install needed. It uses a fictional music library, so you can explore the guide, build stations and change settings.
 
 | Guide | Now Playing | Station editor |
 | :---: | :---: | :---: |
@@ -22,6 +25,7 @@
 - [Security and remote access](#security-and-remote-access)
 - [Roadmap](#roadmap)
 - [Development](#development)
+- [License](#license)
 
 ## Why Radiarr?
 
@@ -205,6 +209,7 @@ npm install
 npm run dev        # starts the app at http://localhost:8484
 npm test           # runs the scheduling, batch, and backup tests
 npm run lint       # type-checks the project
+npm run demo:build # builds the online demo into dist-demo/
 ```
 
 To build the desktop app yourself:
@@ -223,7 +228,12 @@ Where things live:
 | `src/server/` | Library scanning, Plex connection, audio streaming, API |
 | `src/desktop/` | The desktop app wrapper (Electron) |
 | `src/shared/` | Code used by both the interface and the server |
+| `demo/` | The online demo: a stand-in server that runs in the browser |
 | `docs/` | The application guide and screenshots |
+
+## License
+
+Radiarr is free software, licensed under the [GNU Affero General Public License v3.0](LICENSE). You can use, share and modify it. If you share a modified version, including running it as an online service, you must make your changes available under the same licence.
 
 ## Feedback
 
