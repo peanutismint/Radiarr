@@ -11,7 +11,7 @@ import {
   TagProblemTrack,
   UnreadableFileReport,
 } from '../../shared/types.ts';
-import { MUSIC_DIR } from '../config.ts';
+import { AUTO_DISCOVER_LIBRARIES, MUSIC_DIR } from '../config.ts';
 import { db } from '../db/index.ts';
 import { LocalFolderSource } from '../sources/LocalFolderSource.ts';
 import { MusicSource } from '../sources/MusicSource.ts';
@@ -32,10 +32,20 @@ function normalizeKey(str: string): string {
   return str.trim().toLowerCase();
 }
 
+/** Thrown at safe checkpoints inside a scan once the user has asked it to stop. */
+class ScanCancelledError extends Error {
+  constructor() {
+    super('Scan stopped by user.');
+    this.name = 'ScanCancelledError';
+  }
+}
+
 class ScannerService {
   private readonly musicSource: MusicSource;
+  private cancelRequested = false;
   private progress: ScanProgress = {
     isScanning: false,
+    isCancelling: false,
     currentLibrary: null,
     filesProcessed: 0,
     filesTotal: 0,
@@ -56,6 +66,12 @@ class ScannerService {
   }
 
   public async syncDiscoveredLibraries(): Promise<LibraryInfo[]> {
+    // Desktop app: libraries are only the folders the user added. Nothing is
+    // auto-registered, and nothing already registered is touched here.
+    if (!AUTO_DISCOVER_LIBRARIES) {
+      return this.getLibraries();
+    }
+
     const discovered = await this.musicSource.discoverLibraries();
     const discoveredIds = new Set(discovered.map((d) => d.id));
 
@@ -208,6 +224,10 @@ class ScannerService {
       trackCount: Number(r.track_count || 0),
       albumCount: Number(r.album_count || 0),
       artistCount: Number(r.artist_count || 0),
+      removable:
+        !AUTO_DISCOVER_LIBRARIES ||
+        r.source_type === 'plex' ||
+        r.id.startsWith('custom-'),
     }));
   }
 
@@ -229,6 +249,18 @@ class ScannerService {
       return { started: false, message: 'A scan is already in progress.' };
     }
 
+    // Mark the scan as active before returning, so a stop request sent straight
+    // after this call always finds it.
+    this.cancelRequested = false;
+    this.progress = {
+      isScanning: true,
+      isCancelling: false,
+      currentLibrary: null,
+      filesProcessed: 0,
+      filesTotal: 0,
+      currentFile: null,
+    };
+
     // Run asynchronously so the UI and HTTP call are never blocked
     void this.runIncrementalScan(libraryId);
     return {
@@ -239,23 +271,46 @@ class ScannerService {
     };
   }
 
+  /**
+   * Asks the running scan to stop. It winds down at the next safe checkpoint
+   * (between batches of files), keeping everything imported so far. Because
+   * scans are incremental, the next scan picks up where this one left off.
+   */
+  public cancelScan(): { cancelling: boolean; message: string } {
+    if (!this.progress.isScanning) {
+      return { cancelling: false, message: 'No scan is running.' };
+    }
+    this.cancelRequested = true;
+    this.progress.isCancelling = true;
+    return { cancelling: true, message: 'Stopping scan...' };
+  }
+
+  private throwIfCancelled(): void {
+    if (this.cancelRequested) {
+      throw new ScanCancelledError();
+    }
+  }
+
   private async runIncrementalScan(targetLibraryId?: string): Promise<void> {
     const startedAt = Date.now();
-    this.progress = {
-      isScanning: true,
-      currentLibrary: null,
-      filesProcessed: 0,
-      filesTotal: 0,
-      currentFile: null,
-    };
+    const shouldAbort = (): boolean => this.cancelRequested;
 
-    const insertRunResult = db
-      .prepare(
-        `INSERT INTO scan_runs (started_at, status, skipped_by_ext_json, unreadable_files_json)
-         VALUES (?, 'running', '{}', '[]')`
-      )
-      .run(startedAt);
-    const runId = Number(insertRunResult.lastInsertRowid);
+    let runId: number;
+    try {
+      const insertRunResult = db
+        .prepare(
+          `INSERT INTO scan_runs (started_at, status, skipped_by_ext_json, unreadable_files_json)
+           VALUES (?, 'running', '{}', '[]')`
+        )
+        .run(startedAt);
+      runId = Number(insertRunResult.lastInsertRowid);
+    } catch (err) {
+      // Never leave the scanner stuck in the "scanning" state.
+      this.cancelRequested = false;
+      this.progress = { ...this.progress, isScanning: false, isCancelling: false };
+      console.error('Scan could not start:', err);
+      return;
+    }
 
     const aggregatedSkippedByExt: Record<string, number> = {};
     const unreadableFiles: UnreadableFileReport[] = [];
@@ -276,6 +331,7 @@ class ScannerService {
       let totalFiles = 0;
 
       for (const lib of enabledLibs) {
+        this.throwIfCancelled();
         if (lib.sourceType === 'plex') {
           this.progress.currentLibrary = lib.name;
           const sectionKey = lib.path.split('/').pop() || '';
@@ -297,7 +353,14 @@ class ScannerService {
             });
           }
         } else {
-          const walkResult = await this.musicSource.walkLibrary(lib.path);
+          this.progress.currentLibrary = lib.name;
+          const walkResult = await this.musicSource.walkLibrary(
+            lib.path,
+            shouldAbort
+          );
+          // A stopped walk is incomplete, so it must never reach the
+          // "remove tracks missing from disk" step below.
+          this.throwIfCancelled();
           walkedByLib.set(lib.id, walkResult);
           totalFiles += walkResult.candidates.length;
 
@@ -307,6 +370,7 @@ class ScannerService {
         }
       }
 
+      this.throwIfCancelled();
       this.progress.filesTotal = totalFiles;
 
       const upsertAlbumStmt = db.prepare(`
@@ -357,6 +421,7 @@ class ScannerService {
       `);
 
       for (const lib of enabledLibs) {
+        this.throwIfCancelled();
         this.progress.currentLibrary = lib.name;
 
         if (lib.sourceType === 'plex') {
@@ -371,6 +436,7 @@ class ScannerService {
 
           const BATCH_SIZE = 200;
           for (let i = 0; i < plexTracks.length; i += BATCH_SIZE) {
+            this.throwIfCancelled();
             const batch = plexTracks.slice(i, i + BATCH_SIZE);
             this.progress.currentFile = batch[0]?.title || lib.name;
 
@@ -489,6 +555,7 @@ class ScannerService {
         // Probe changed/new files concurrently in batches of 48 using in-process header parsing and commit each batch in a single SQLite transaction
         const PROBE_CONCURRENCY = 48;
         for (let i = 0; i < toProbe.length; i += PROBE_CONCURRENCY) {
+          this.throwIfCancelled();
           const batch = toProbe.slice(i, i + PROBE_CONCURRENCY);
           this.progress.currentFile = batch[0].filePath;
 
@@ -648,24 +715,51 @@ class ScannerService {
         runId
       );
     } catch (err) {
+      const cancelled = err instanceof ScanCancelledError;
+      let totals = { tracks: 0, albums: 0, artists: 0, tagsIncomplete: 0 };
+      if (cancelled) {
+        // Everything committed before the stop is kept; record where we got to.
+        try {
+          this.invalidateCaches();
+          totals = this.getTotalsForEnabledLibraries();
+        } catch {
+          // ignore, totals are informational
+        }
+      }
+
       db.prepare(`
         UPDATE scan_runs
         SET finished_at = ?,
-            status = 'failed',
+            status = ?,
+            tracks_total = ?,
+            albums_total = ?,
+            artists_total = ?,
+            tags_incomplete_count = ?,
             skipped_by_ext_json = ?,
             unreadable_files_json = ?
         WHERE id = ?
       `).run(
         Date.now(),
+        cancelled ? 'cancelled' : 'failed',
+        totals.tracks,
+        totals.albums,
+        totals.artists,
+        totals.tagsIncomplete,
         JSON.stringify(aggregatedSkippedByExt),
         JSON.stringify(unreadableFiles),
         runId
       );
-      console.error('Scan error:', err);
+      if (cancelled) {
+        console.log('Scan stopped by user.');
+      } else {
+        console.error('Scan error:', err);
+      }
     } finally {
       this.invalidateCaches();
+      this.cancelRequested = false;
       this.progress = {
         isScanning: false,
+        isCancelling: false,
         currentLibrary: null,
         filesProcessed: this.progress.filesProcessed,
         filesTotal: this.progress.filesTotal,
@@ -714,7 +808,7 @@ class ScannerService {
           id: number;
           started_at: number;
           finished_at: number | null;
-          status: 'running' | 'completed' | 'failed';
+          status: 'running' | 'completed' | 'failed' | 'cancelled';
           tracks_total: number;
           albums_total: number;
           artists_total: number;

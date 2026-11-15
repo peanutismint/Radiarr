@@ -39,11 +39,16 @@ export class LocalFolderSource implements MusicSource {
     return libraries;
   }
 
-  public async walkLibrary(libraryPath: string): Promise<LibraryWalkResult> {
+  public async walkLibrary(
+    libraryPath: string,
+    shouldAbort?: () => boolean
+  ): Promise<LibraryWalkResult> {
     const candidates: DiscoveredAudioCandidate[] = [];
     const skippedByExt: Record<string, number> = {};
+    const aborted = (): boolean => Boolean(shouldAbort?.());
 
     const walkDir = async (dirPath: string): Promise<void> => {
+      if (aborted()) return;
       let entries;
       try {
         entries = await fs.readdir(dirPath, { withFileTypes: true });
@@ -75,6 +80,7 @@ export class LocalFolderSource implements MusicSource {
       // Stat audio files concurrently in batches of 32 to avoid sequential SMB latency
       const STAT_CONCURRENCY = 32;
       for (let i = 0; i < audioFiles.length; i += STAT_CONCURRENCY) {
+        if (aborted()) return;
         const batch = audioFiles.slice(i, i + STAT_CONCURRENCY);
         await Promise.all(
           batch.map(async ({ fullPath, ext }) => {
@@ -96,6 +102,7 @@ export class LocalFolderSource implements MusicSource {
       // Walk subdirectories concurrently in batches of 8
       const DIR_CONCURRENCY = 8;
       for (let i = 0; i < subdirs.length; i += DIR_CONCURRENCY) {
+        if (aborted()) return;
         const batch = subdirs.slice(i, i + DIR_CONCURRENCY);
         await Promise.all(batch.map((d) => walkDir(d)));
       }
