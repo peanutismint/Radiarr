@@ -1790,7 +1790,7 @@ export function SettingsView({
                   const currentOrigin =
                     typeof window !== 'undefined'
                       ? window.location.origin
-                      : 'http://localhost:3000';
+                      : 'http://localhost:8484';
                   const streamUrl = activeSt
                     ? `${currentOrigin}/api/stations/${encodeURIComponent(activeSt.id)}/stream.mp3`
                     : '';
@@ -1882,7 +1882,7 @@ export function SettingsView({
                   const currentOrigin =
                     typeof window !== 'undefined'
                       ? window.location.origin
-                      : 'http://localhost:3000';
+                      : 'http://localhost:8484';
                   const streamUrl = activeSt
                     ? `${currentOrigin}/api/stations/${encodeURIComponent(activeSt.id)}/stream.mp3`
                     : '';
