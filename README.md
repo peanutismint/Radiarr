@@ -124,7 +124,7 @@ npm run desktop:dist   # Packages ready-to-ship installers (.exe, .dmg, .AppImag
    ```bash
    npm run dev
    ```
-4. Open `http://localhost:3000` and start curating your stations!
+4. Open `http://localhost:8484` and start curating your stations!
 
 ---
 
@@ -184,7 +184,7 @@ radiarr/
 
 | Variable | Default | Description |
 | :--- | :--- | :--- |
-| `PORT` | `8484` (Docker) / `3000` (Dev) | Port for the web interface and API server |
+| `PORT` | `8484` | Port for the web interface and API server |
 | `TZ` | `UTC` | Timezone used for EPG schedules and 24-hour dayparts |
 | `CONFIG_DIR` | `/config` (or `./data/config`) | Location of `radiarr.db`, artwork cache, and transcode data |
 | `MUSIC_DIR` | `/music` (or `./data/music`) | Root folder scanned for local music libraries |
