@@ -2,7 +2,7 @@ import { execFile } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
-import { MUSIC_DIR } from '../config.ts';
+import { AUTO_DISCOVER_LIBRARIES, MUSIC_DIR } from '../config.ts';
 
 const execFileAsync = promisify(execFile);
 
@@ -190,6 +190,11 @@ const SAMPLE_TRACKS: SampleTrackSpec[] = [
  * folder artwork, non-audio skipped files (.txt, .nfo), and one corrupt file so every scanner feature can be verified immediately.
  */
 export async function ensureDemoLibraryIfEmpty(): Promise<void> {
+  // The desktop app has no managed music root, so there is nowhere to seed demo files.
+  if (!AUTO_DISCOVER_LIBRARIES) {
+    return;
+  }
+
   try {
     const entries = await fs.readdir(MUSIC_DIR, { withFileTypes: true });
     const hasSubdirs = entries.some((e) => e.isDirectory() && !e.name.startsWith('.'));

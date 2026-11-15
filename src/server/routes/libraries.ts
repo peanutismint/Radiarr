@@ -89,6 +89,10 @@ librariesRouter.post('/scan', requireAuth('admin'), async (req, res) => {
   res.json(result);
 });
 
+librariesRouter.post('/scan/cancel', requireAuth('admin'), (_req, res) => {
+  res.json(scannerService.cancelScan());
+});
+
 librariesRouter.get('/scan/status', (_req, res) => {
   const overview = scannerService.getOverview();
   res.json(overview);
