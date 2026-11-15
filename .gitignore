@@ -21,3 +21,4 @@ config/
 package-lock.json
 
 
+dist-demo/
