@@ -2,9 +2,10 @@
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "com.radiarr.app",
   "productName": "Radiarr",
-  "copyright": "Copyright © 2026 Radiarr",
+  "copyright": "Copyright \u00a9 2026 Radiarr",
   "directories": {
-    "output": "release"
+    "output": "release",
+    "buildResources": "assets"
   },
   "files": [
     "dist/**/*",
@@ -20,51 +21,88 @@
     "target": [
       {
         "target": "nsis",
-        "arch": ["x64"]
+        "arch": [
+          "x64"
+        ]
       },
       {
         "target": "portable",
-        "arch": ["x64"]
+        "arch": [
+          "x64"
+        ]
       }
-    ]
+    ],
+    "icon": "assets/icon.png"
   },
   "nsis": {
     "oneClick": false,
     "allowToChangeInstallationDirectory": true,
     "createDesktopShortcut": true,
     "createStartMenuShortcut": true,
-    "shortcutName": "Radiarr"
+    "shortcutName": "Radiarr",
+    "artifactName": "Radiarr-${version}-Windows-Installer.${ext}"
   },
   "publish": null,
   "mac": {
     "target": [
       {
         "target": "dmg",
-        "arch": ["x64", "arm64"]
+        "arch": [
+          "x64",
+          "arm64"
+        ]
       },
       {
         "target": "zip",
-        "arch": ["x64", "arm64"]
+        "arch": [
+          "x64",
+          "arm64"
+        ]
       }
     ],
     "category": "public.app-category.music",
     "darkModeSupport": true,
-    "identity": null
+    "identity": null,
+    "artifactName": "Radiarr-${version}-macOS-${arch}.${ext}",
+    "icon": "assets/icon.png"
   },
   "linux": {
     "target": [
       {
         "target": "AppImage",
-        "arch": ["x64"]
+        "arch": [
+          "x64"
+        ]
       },
       {
         "target": "deb",
-        "arch": ["x64"]
+        "arch": [
+          "x64"
+        ]
       }
     ],
     "category": "Audio",
     "maintainer": "peanutismint <peanutismint@users.noreply.github.com>",
     "synopsis": "Turn your music library into 24/7 continuous live radio stations",
-    "description": "Radiarr is a continuous live broadcast server and desktop player that turns local music collections into automated virtual radio stations."
-  }
+    "description": "Radiarr is a continuous live broadcast server and desktop player that turns local music collections into automated virtual radio stations.",
+    "icon": "assets/icon.png"
+  },
+  "portable": {
+    "artifactName": "Radiarr-${version}-Windows-Portable.${ext}"
+  },
+  "dmg": {
+    "artifactName": "Radiarr-${version}-macOS-${arch}.${ext}"
+  },
+  "appImage": {
+    "artifactName": "Radiarr-${version}-Linux.${ext}"
+  },
+  "deb": {
+    "artifactName": "Radiarr-${version}-Linux.${ext}"
+  },
+  "extraResources": [
+    {
+      "from": "assets/icon.png",
+      "to": "icon.png"
+    }
+  ]
 }

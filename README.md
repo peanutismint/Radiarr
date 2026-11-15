@@ -1,214 +1,230 @@
-# Radiarr 📻 (`v0.8`)
+# Radiarr 📻
 
-> **Your personal music library, turned into your dream radio dial.**  
-> Continuous, deterministic virtual "live" radio stations crafted from your **Plex Media Server**, local hard drive, or network **NAS**—synced across every device in your house.
+> **Your personal music library, turned into your dream radio dial.**
+> Always-on virtual radio stations built from your **Plex** library, local folders, or NAS. Open it, and something good is already playing.
 
 [![Version](https://img.shields.io/badge/version-v0.8.0-indigo.svg)](https://github.com/peanutismint/radiarr/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20Docker-emerald.svg)](https://github.com/peanutismint/radiarr/releases)
+[![Platform](https://img.shields.io/badge/platform-Docker%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-emerald.svg)](#install)
 
----
+| Guide | Now Playing | Station editor |
+| :---: | :---: | :---: |
+| ![The guide, showing every station and what each is playing right now](docs/screenshots/guide.png) | ![Now Playing, with the neighbouring stations one click away](docs/screenshots/now-playing.png) | ![Editing a station's rules, with a live count of matching tracks](docs/screenshots/edit-station.png) |
+| See what's on every station | Flip stations like a car radio | Build stations from simple rules |
+
+## Contents
+
+- [Why Radiarr?](#why-radiarr)
+- [Features](#features)
+- [Install](#install)
+- [First run](#first-run)
+- [Listening on your phone and in the car](#listening-on-your-phone-and-in-the-car)
+- [Configuration](#configuration)
+- [Security and remote access](#security-and-remote-access)
+- [Roadmap](#roadmap)
+- [Development](#development)
 
 ## Why Radiarr?
 
-You spent years ripping CDs, hoarding FLACs, and meticulously curating gigabytes of music. So why do you still end up:
-1. Staring blankly at an endless list of artists with decision paralysis?
-2. Playing the exact same comfort playlist for the 400th time?
-3. Surrendering to streaming algorithms that keep pushing corporate pop on you?
+You spent years building a music collection. So why do you still end up:
 
-**Radiarr** is *Tunarr*, but built from the ground up for music lovers. It transforms your personal collection into a living, breathing radio dial where every station is curated by you.
+1. Scrolling an endless artist list, unable to pick anything?
+2. Playing the same comfort playlist for the 400th time?
+3. Giving up and letting a streaming algorithm choose?
 
-Flip on Channel 1 for an **All-Library Shuffle**, jump to Channel 4 for an **80s New Wave & Post-Punk** channel with silky 4-second crossfades, switch to Channel 12 for a **Led Zeppelin Chronological Discography**, or let your **24-Hour Daypart Station** wake you up with acoustic coffeehouse tracks before ramping into upbeat rock for the afternoon.
+Radiarr is like [Tunarr](https://github.com/chrisbenincasa/tunarr), but for music. You describe the stations you want ("70s soft rock", "everything by Led Zeppelin in order", "chill in the morning, loud in the afternoon") and Radiarr keeps them on air forever. Tune in and you land mid-song, exactly where that station is on the clock. Don't like the song? Flip to the next station, the way you would in a car.
 
-Best of all? **It's mathematically scheduled.** Zero CPU is burned when you aren't listening. But when you tune in from your phone, browser, or car, you jump into the song at the exact second it’s playing on the clock—synced everywhere.
+## Features
 
----
+**📻 Stations that are always on.** Every station follows a fixed timeline worked out from the clock, not from a running process. Nothing plays, and no CPU is used, until you tune in. Open Radiarr on two devices and they play the same song at the same moment.
 
-## What Makes It Special
+**🕹️ Simple rules, real variety.** Build a station from libraries, artists, albums, genres, or decades, then choose how it plays:
 
-### 📻 Truly Deterministic "Live" Radio
-Every channel runs on an exact mathematical timeline anchored to a station seed and epoch timestamp. When you tune in, there's no waiting for a playlist to shuffle or an indexer to calculate—audio starts instantly. If you listen on your laptop and walk to your car, you'll hear the exact same song at the exact same beat.
+- **Track Shuffle** plays every matching song once before repeating any.
+- **Album Shuffle** shuffles whole albums but plays each one start to finish.
+- **Straight** plays a discography in release order.
 
-### 🎚️ Dual-Deck Gapless Playback & Smart Crossfades
-No awkward silences between songs! Radiarr's dual-deck audio engine preloads upcoming tracks 25 seconds ahead of time.
-- **Full-album discographies** play completely gapless—transitions across tracks on *The Dark Side of the Moon* or *Abbey Road* sound identical to vinyl or CD.
-- **Shuffle & Era channels** feature smooth, customizable crossfades (`2s`, `3s`, `5s`, or `8s`).
+**🕰️ Dayparting.** One station can change its rules through the day, for example acoustic at 6 AM, upbeat at noon, ambient after 10 PM.
 
-### 📦 Supercharged Bulk Station Wrangling *(New in v0.8!)*
-Managing dozens of channels should be fun, not tedious:
-- **Batch Drag & Drop**: Check off 5 stations and drag any one of them to drop the entire group anywhere in your lineup, with relative order locked in.
-- **Batch Shifting via Arrows**: Click the Up or Down arrow on any selected station to bump the entire group up or down together.
-- **Smooth Auto-Scroll**: Drag a station near the top or bottom of the screen and the list glides up or down smoothly without runaway speed.
-- **En Masse Actions**: Bulk duplicate, reshuffle schedules, turn on/off, bulk-switch play modes, or delete with safety confirmation.
+**🎚️ Gapless playback and crossfades.** Albums play without gaps between tracks. Shuffle stations can crossfade (2, 3, 5, or 8 seconds) like real radio.
 
-### 🕹️ Real Station Curation & 24-Hour Dayparting
-- **Three Playback Personalities**:
-  - **Track Shuffle**: Powered by a smart shuffle bag that plays every eligible song once before repeating.
-  - **Album Shuffle**: Shuffles whole albums while keeping their tracklists strictly in sequence.
-  - **Straight**: Chronological discography order by release year and disc/track number.
-- **Rule Builder**: Filter by music libraries, artists, albums, genres, or release decade (e.g. `1970–1979`).
-- **Daypart Schedules**: Automatically adjust a station’s mood by time of day (chill in the morning, high-energy in the afternoon, mellow ambient after 8 PM).
+**🏎️ Steering wheel controls.** Over Bluetooth, your car's Next and Previous buttons switch stations like radio presets. Prefer them to skip tracks? Tap versus hold behaviour is configurable in Settings.
 
-### 🏎️ Car & Bluetooth Steering Wheel Freedom
-Radiarr fully hooks into the browser **MediaSession API**. When streaming over Bluetooth in your car or wearing earbuds, tapping the **Next Track / Previous Track** buttons on your steering wheel flips to the **Next / Previous Radio Station**—just like physical car presets!
+**⏪ Time-shifting.** Click any song in the guide, past or upcoming, to play it now. One click returns you to live.
 
-### 📺 IPTV & EPG Integration (M3U + XMLTV)
-Plug Radiarr straight into **Jellyfin**, **Plex Live TV**, **Kodi**, **TiviMate**, or **VLC**. Radiarr exports standard M3U channel playlists (`/channels.m3u`) and continuous XMLTV electronic program guides (`/xmltv.xml`).
+**📺 Works with other players.** Radiarr publishes its stations as a standard M3U playlist with an XMLTV guide, so you can add them to Jellyfin, Plex Live TV, Kodi, TiviMate, or VLC.
 
-### 🧰 Flight Recorder Diagnostics & Logs *(New in v0.8!)*
-Got a song that refused to stream or a Plex connection that flaked? Head to **Settings → Diagnostics & Logs** to see a realtime timeline of playback events, transcode status, connection tests, and one-click diagnostics bundle export.
+**📦 Bulk station management.** Select several stations to drag, reorder, duplicate, reshuffle, enable, or delete them together.
 
-### 🖥️ Native Desktop & Docker Ready
-- **Desktop**: Run natively on **Windows**, **macOS** (Universal Apple Silicon + Intel), and **Linux**. Minimize to the system tray so music plays in the background without cluttering your dock.
-- **Docker**: Drop a `docker-compose.yml` file onto your unRAID, TrueNAS, or Synology NAS and you're off to the races.
+**🧰 Diagnostics.** A built-in log shows playback events, transcodes, and connection tests, with a one-click export when something needs investigating.
 
----
+## Install
 
-## Quick Start
+There are two ways to run Radiarr. Both give you the same app.
 
-### 1. Standalone Desktop App (Windows, macOS, Linux)
-
-Grab the latest installer or portable binary from [**GitHub Releases**](https://github.com/peanutismint/radiarr/releases):
-
-- 🪟 **Windows 10 / 11**: `Radiarr-Setup-0.8.0.exe` (installer) or `Radiarr-0.8.0-portable.exe`
-- 🍎 **macOS**: `Radiarr-0.8.0.dmg` (Universal binary for Apple Silicon M1/M2/M3/M4 and Intel)
-- 🐧 **Linux**: `Radiarr-0.8.0.AppImage` or `radiarr_0.8.0_amd64.deb`
-
-To build the desktop bundle from source:
-```bash
-npm install
-npm run desktop:build
-npm run desktop:pack   # Generates unpacked desktop binaries in release/
-# or:
-npm run desktop:dist   # Packages ready-to-ship installers (.exe, .dmg, .AppImage)
-```
-
----
-
-### 2. Docker Compose (Home Server & NAS)
-
-1. Grab `docker-compose.yml`:
-   ```yaml
-   services:
-     radiarr:
-       image: ghcr.io/peanutismint/radiarr:latest
-       container_name: radiarr
-       restart: unless-stopped
-       ports:
-         - "8484:8484"
-       environment:
-         - TZ=UTC
-         - PORT=8484
-       volumes:
-         - ./data/config:/config
-         - /path/to/your/music:/music:ro  # Optional if using Plex exclusively
-   ```
-2. Spin it up:
-   ```bash
-   docker compose up -d
-   ```
-3. Open `http://localhost:8484` (or your server's IP address) in any browser!
-
----
-
-### 3. Local Development (Node.js 22+)
-
-1. Ensure **Node.js 22+** (uses built-in `node:sqlite`) and **FFmpeg** are installed.
-2. Clone and install:
-   ```bash
-   git clone https://github.com/peanutismint/radiarr.git
-   cd radiarr
-   npm install
-   ```
-3. Start the Vite + Express dev server:
-   ```bash
-   npm run dev
-   ```
-4. Open `http://localhost:8484` and start curating your stations!
-
----
-
-## Repository Structure
-
-```text
-radiarr/
-├── docs/
-│   └── APP_GUIDE.md                   # Comprehensive guide, dayparting recipes & shortcuts
-├── src/
-│   ├── App.tsx                        # Audio engines, global state & MediaSession routing
-│   ├── main.tsx                       # React DOM entry point
-│   ├── desktop/
-│   │   ├── main.ts                    # Electron tray icon, window lifecycle & native IPC
-│   │   └── preload.ts                 # Context bridge for native OS file pickers
-│   ├── client/
-│   │   ├── components/
-│   │   │   ├── NowPlayingView.tsx     # Full-screen vinyl/CD art, live indicator & station cards
-│   │   │   ├── GuideView.tsx          # Interactive EPG grid with click-to-timeshift
-│   │   │   ├── CurationView.tsx       # Channel manager, multi-select drag & drop, rule builder
-│   │   │   ├── DiagnosticsTab.tsx     # Realtime playback event logs & diagnostics export
-│   │   │   ├── SettingsView.tsx       # Libraries, NAS mount helper, auto-backups & themes
-│   │   │   ├── UsersManagementTab.tsx # Multi-user management & role-based access control
-│   │   │   └── PlayerBar.tsx          # Persistent bottom transport bar & crossfading
-│   │   └── hooks/
-│   │       └── useTheme.ts            # Light / Dark / System theme sync
-│   ├── server/
-│   │   ├── audio/
-│   │   │   ├── StreamService.ts       # Byte-range audio streaming & Plex proxy
-│   │   │   ├── PlaybackLogService.ts  # Realtime flight recorder & playback error tracking
-│   │   │   └── TranscodeCache.ts      # On-the-fly FFmpeg transcoding cache
-│   │   ├── db/
-│   │   │   └── index.ts               # SQLite schema & zero-dependency node:sqlite driver
-│   │   ├── engine/
-│   │   │   ├── ScheduleEngine.ts      # Deterministic EPG math & station generators
-│   │   │   └── DaypartResolver.ts     # Wall-clock 24-hour daypart transitions
-│   │   └── routes/
-│   │       ├── stations.ts            # Station CRUD, batch moves, EPG & M3U streams
-│   │       ├── diagnostics.ts         # Diagnostics log streamer & health checks
-│   │       ├── users.ts               # User accounts & RBAC session management
-│   │       └── libraries.ts           # Plex OAuth PIN flow & local scanner
-│   ├── shared/
-│   │   ├── stationVisuals.ts          # Category formulas, swatch palette & batch move math
-│   │   └── types.ts                   # Unified types & APP_VERSION constant
-│   └── tests/
-│       ├── batch.test.ts              # Unit tests for multi-station drag, drop & nudge math
-│       ├── schedule.test.ts           # Deterministic PRNG & looping timeline verification
-│       └── backup.test.ts             # Catalog backup and restore verification
-├── server.ts                          # Full-stack Express + Vite server entry
-├── radiarr.dockerfile                 # Lightweight multi-stage Node 22 Alpine + FFmpeg build
-└── package.json
-```
-
----
-
-## Environment Variables
-
-| Variable | Default | Description |
+| | Best for | You need |
 | :--- | :--- | :--- |
-| `PORT` | `8484` | Port for the web interface and API server |
-| `TZ` | `UTC` | Timezone used for EPG schedules and 24-hour dayparts |
-| `CONFIG_DIR` | `/config` (or `./data/config`) | Location of `radiarr.db`, artwork cache, and transcode data |
-| `MUSIC_DIR` | `/music` (or `./data/music`) | Root folder scanned for local music libraries |
-| `TRANSCODE_BITRATE_KBPS` | `192` | MP3 bitrate for non-browser-native formats (FLAC/ALAC/WMA) |
-| `TRANSCODE_CACHE_MAX_MB` | `2048` | Max disk space (MB) reserved for cached transcodes |
-| `STREAM_BITRATE_KBPS` | `192` | Bitrate for external continuous `/api/stations/:id/stream.mp3` feeds |
-| `RADIARR_NAS_HOST` | `192.168.1.50` | Default host/IP for NAS SMB/CIFS network share mount helper |
-| `RADIARR_NAS_USER` | `admin` | Default username for NAS SMB/CIFS network share mount helper |
-| `RADIARR_NAS_PASSWORD` | *(empty)* | Default password for NAS SMB/CIFS network share mount helper |
+| **Docker** | A home server or NAS that is always on | Docker |
+| **Desktop app** | Trying it out, or running it on your everyday computer | Nothing else (see the FFmpeg note below) |
 
----
+### Option 1: Docker
 
-## Authentication, Security & Storage Note
+Save this as `docker-compose.yml`, changing `/path/to/your/music` to your music folder (delete that line if you only use Plex):
 
-- **Open Access by Default**: Out of the box, Radiarr is designed for home LANs and private VPNs (Tailscale, WireGuard). Everyone on your network connects with immediate **Admin** access without needing to log in—meaning zero password friction on smart TVs, Apple TVs, or car head units.
-- **Optional Multi-User & Role-Based Access Control (RBAC)**: If you share Radiarr with others and want to protect your stations, you can enable User Accounts in **Settings → Users**. Once enabled, users log in as either **Admin** (full curation, station creation, and system settings) or **Listener** (read-only playback and interactive guide).
-- **NAS Credential Storage**: If you configure SMB/CIFS network share credentials in the web UI, the password is stored in **plain text** within the internal SQLite settings database (`radiarr.db`). Ensure filesystem permissions on your `config` directory or Docker volume are restricted to trusted administrators.
-- **Remote Access**: When accessing Radiarr outside your home, place it behind a secure reverse proxy (such as Authelia, Authentik, or Cloudflare Access) or use a private mesh VPN like Tailscale.
+```yaml
+services:
+  radiarr:
+    image: ghcr.io/peanutismint/radiarr:latest
+    container_name: radiarr
+    restart: unless-stopped
+    ports:
+      - "8484:8484"
+    environment:
+      - TZ=America/Los_Angeles   # your timezone
+    volumes:
+      - ./config:/config
+      - /path/to/your/music:/music:ro
+```
 
----
+Then start it:
 
-## Community & Contributing
+```bash
+docker compose up -d
+```
 
-Built something cool with Radiarr or have a feature idea?
-- 📖 Read the full [**Application Guide (`docs/APP_GUIDE.md`)**](./docs/APP_GUIDE.md) for daypart examples, keyboard shortcuts, and Plex tips.
-- 🐛 Found a bug or want to request a feature? Open an issue on GitHub.
-- ⭐️ If Radiarr brings your music collection back to life, give the repo a star!
+Open `http://localhost:8484`, or `http://<your-server-ip>:8484` from another device.
+
+To update later, run `docker compose pull` followed by `docker compose up -d`. The image works on regular PCs and servers, and on ARM devices such as a Raspberry Pi.
+
+If your music is on a network share, see `docker-compose.nas-example.yml`. To build the image yourself instead, clone this repo and run `docker compose up -d --build`.
+
+### Option 2: Desktop app (Windows, macOS, Linux)
+
+Download the installer for your system from [**Releases**](https://github.com/peanutismint/radiarr/releases):
+
+| System | File to download |
+| :--- | :--- |
+| Windows 10 / 11 | `Radiarr-x.x.x-Windows-Installer.exe` installs Radiarr with Start menu and desktop shortcuts. Recommended for most people. |
+| Windows, no install | `Radiarr-x.x.x-Windows-Portable.exe` runs straight from wherever you save it, for example a USB stick. Nothing is installed. |
+| macOS, Apple Silicon (M1 or newer) | `Radiarr-x.x.x-macOS-arm64.dmg` |
+| macOS, Intel | `Radiarr-x.x.x-macOS-x64.dmg` |
+| Linux | `Radiarr-x.x.x-Linux.AppImage`, or `Radiarr-x.x.x-Linux.deb` for Debian and Ubuntu |
+
+Not sure which Mac you have? Open the Apple menu and choose **About This Mac**. "Chip: Apple M..." means Apple Silicon. "Processor: Intel" means Intel.
+
+Closing the window keeps Radiarr running in the system tray, so other devices on your network can keep listening at `http://<your-computer-ip>:8484`. Quit from the tray icon to stop it.
+
+#### Security warnings on first launch
+
+The desktop app is not yet code-signed, so your computer will warn you the first time. This is expected.
+
+**macOS** says the app "cannot be opened" or is from an unidentified developer:
+
+1. Open **System Settings**, then **Privacy & Security**.
+2. Scroll down to the message about Radiarr and click **Open Anyway**.
+3. Confirm with your password or Touch ID. You only need to do this once.
+
+If macOS says the app "is damaged", open Terminal and run:
+
+```bash
+xattr -cr /Applications/Radiarr.app
+```
+
+**Windows** shows a blue "Windows protected your PC" box:
+
+1. Click **More info**.
+2. Click **Run anyway**.
+
+#### FFmpeg
+
+Radiarr uses [FFmpeg](https://ffmpeg.org) to play formats that browsers cannot handle directly, such as FLAC, ALAC, and WMA. The Docker version includes it. The desktop app currently expects FFmpeg to be installed on your computer, so without it those formats will not play (MP3, AAC, and Plex libraries are unaffected). Bundling FFmpeg into the desktop installers is planned.
+
+## First run
+
+1. **Add your music.** Go to **Settings**, then **Libraries**. Sign in with Plex and pick your music libraries, or switch to **Local Folders** and choose a folder.
+2. **Wait for the scan.** Plex libraries index in seconds. Local folders take longer the first time.
+3. **Add stations.** Open **Curation**. Radiarr suggests starter stations based on what it found, and **New Station** lets you build your own.
+4. **Listen.** Open the **Guide** and click any station.
+
+The full walkthrough, including dayparting recipes and keyboard shortcuts, is in the [**Application Guide**](docs/APP_GUIDE.md).
+
+## Listening on your phone and in the car
+
+<img src="docs/screenshots/mobile.png" alt="Radiarr Now Playing on a phone" width="260" align="right">
+
+Open your Radiarr address in your phone's browser. Playback continues with the screen locked, the lock screen shows the station, song, and artwork, and Bluetooth controls work.
+
+Away from home, your phone needs a way to reach your server. See [Security and remote access](#security-and-remote-access).
+
+**Known limitations in the browser:**
+
+- Playback does not start by itself when your phone reconnects to the car. You need to press play.
+- After a phone call, Siri, or a navigation voice prompt pauses the music, it does not resume by itself.
+
+Both are restrictions phones place on web pages. A native mobile app that removes them is in development (see [Roadmap](#roadmap)).
+
+<br clear="right">
+
+## Configuration
+
+Everything works with the defaults. These environment variables are optional.
+
+| Variable | Default | What it does |
+| :--- | :--- | :--- |
+| `PORT` | `8484` | Port for the web interface |
+| `TZ` | `UTC` | Timezone for the guide and for dayparting. Set this to your own, for example `America/Los_Angeles` |
+| `CONFIG_DIR` | `/config` in Docker | Where the database, artwork cache, and backups are kept |
+| `MUSIC_DIR` | `/music` in Docker | Folder scanned for local music |
+| `TRANSCODE_BITRATE_KBPS` | `192` | MP3 quality used when a format has to be converted |
+| `TRANSCODE_CACHE_MAX_MB` | `2048` | Disk space allowed for converted files |
+| `STREAM_BITRATE_KBPS` | `192` | MP3 quality of the continuous streams used by external players |
+| `RADIARR_NAS_HOST`, `RADIARR_NAS_USER`, `RADIARR_NAS_PASSWORD` | *(empty)* | Defaults for the network share helper in Settings |
+
+The desktop app stores its data in your user profile (`%APPDATA%\Radiarr` on Windows, `~/Library/Application Support/Radiarr` on macOS, `~/.config/radiarr` on Linux) and looks for music in your Music folder by default.
+
+## Security and remote access
+
+- **Open by default.** Radiarr is built for home networks. Out of the box, anyone who can reach it has full admin access, with no login. This keeps TVs and car screens simple, but it means you should not expose it directly to the internet.
+- **Optional user accounts.** Turn on accounts in **Settings**, then **Users**, to require a login. There are three roles: **Admin** (everything), **Curator** (can create and edit stations), and **Listener** (playback only).
+- **Listening away from home.** Use a private VPN such as [Tailscale](https://tailscale.com) or WireGuard, or put Radiarr behind a reverse proxy that handles sign-in (Authelia, Authentik, Cloudflare Access).
+- **Network share passwords.** If you enter NAS credentials in the web UI, the password is stored unencrypted in Radiarr's database. Keep your config folder private.
+
+## Roadmap
+
+- **Now:** desktop apps for Windows, macOS, and Linux (in testing), with FFmpeg built in and signed installers to follow.
+- **Next:** a native iPhone app, then Android. It connects straight to Plex with no server to set up, resumes by itself in the car, and recovers after calls and voice prompts.
+- **Later:** CarPlay and Android Auto, Jellyfin support.
+
+## Development
+
+You need **Node.js 22 or newer** and **FFmpeg**.
+
+```bash
+git clone https://github.com/peanutismint/radiarr.git
+cd radiarr
+npm install
+npm run dev        # starts the app at http://localhost:8484
+npm test           # runs the scheduling, batch, and backup tests
+npm run lint       # type-checks the project
+```
+
+To build the desktop app yourself:
+
+```bash
+npm run desktop:pack   # unpacked app in release/, quick for testing
+npm run desktop:dist   # full installers in release/
+```
+
+Where things live:
+
+| Folder | Contents |
+| :--- | :--- |
+| `src/client/` | The web interface (React) |
+| `src/server/engine/` | The scheduling engine that decides what each station plays and when |
+| `src/server/` | Library scanning, Plex connection, audio streaming, API |
+| `src/desktop/` | The desktop app wrapper (Electron) |
+| `src/shared/` | Code used by both the interface and the server |
+| `docs/` | The application guide and screenshots |
+
+## Feedback
+
+Found a bug or have an idea? [Open an issue](https://github.com/peanutismint/radiarr/issues). If Radiarr brings your collection back to life, a star helps other people find it.
