@@ -4,7 +4,8 @@
   "productName": "Radiarr",
   "copyright": "Copyright \u00a9 2026 Radiarr",
   "directories": {
-    "output": "release"
+    "output": "release",
+    "buildResources": "assets"
   },
   "files": [
     "dist/**/*",
@@ -30,7 +31,8 @@
           "x64"
         ]
       }
-    ]
+    ],
+    "icon": "assets/icon.png"
   },
   "nsis": {
     "oneClick": false,
@@ -61,7 +63,8 @@
     "category": "public.app-category.music",
     "darkModeSupport": true,
     "identity": null,
-    "artifactName": "Radiarr-${version}-macOS-${arch}.${ext}"
+    "artifactName": "Radiarr-${version}-macOS-${arch}.${ext}",
+    "icon": "assets/icon.png"
   },
   "linux": {
     "target": [
@@ -81,7 +84,8 @@
     "category": "Audio",
     "maintainer": "peanutismint <peanutismint@users.noreply.github.com>",
     "synopsis": "Turn your music library into 24/7 continuous live radio stations",
-    "description": "Radiarr is a continuous live broadcast server and desktop player that turns local music collections into automated virtual radio stations."
+    "description": "Radiarr is a continuous live broadcast server and desktop player that turns local music collections into automated virtual radio stations.",
+    "icon": "assets/icon.png"
   },
   "portable": {
     "artifactName": "Radiarr-${version}-Windows-Portable.${ext}"
@@ -94,5 +98,11 @@
   },
   "deb": {
     "artifactName": "Radiarr-${version}-Linux.${ext}"
-  }
+  },
+  "extraResources": [
+    {
+      "from": "assets/icon.png",
+      "to": "icon.png"
+    }
+  ]
 }
