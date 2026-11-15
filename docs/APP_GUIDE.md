@@ -1,4 +1,4 @@
-# Radiarr Application Guide (`v0.7`)
+# Radiarr Application Guide
 
 This guide walks through every part of **Radiarr**, from connecting your music sources (Plex or Local/NAS folders) to curating stations, using the interactive Electronic Program Guide (EPG), and listening in the car via Bluetooth.
 

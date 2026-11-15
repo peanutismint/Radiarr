@@ -223,6 +223,11 @@ function createWindow(): void {
     minWidth: 460,
     minHeight: 560,
     backgroundColor: '#09090b',
+    // Window/taskbar icon on Windows and Linux (macOS uses the app bundle icon).
+    icon: [
+      path.join(process.resourcesPath || '', 'icon.png'),
+      path.join(__dirname, '..', 'assets', 'icon.png'),
+    ].find((p) => fs.existsSync(p)),
     title: 'Radiarr',
     show: false,
     autoHideMenuBar: true,
