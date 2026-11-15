@@ -1,0 +1,19 @@
+services:
+  radiarr:
+    image: radiarr:latest
+    build:
+      context: .
+      dockerfile: radiarr.dockerfile
+    container_name: radiarr
+    restart: unless-stopped
+    ports:
+      - "8484:8484"
+    environment:
+      - PORT=8484
+      - TZ=UTC
+      - TRANSCODE_BITRATE_KBPS=192
+      - TRANSCODE_CACHE_MAX_MB=2048
+      - STREAM_BITRATE_KBPS=192
+    volumes:
+      - ./config:/config
+      - /path/to/your/music:/music:ro

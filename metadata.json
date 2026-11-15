@@ -1,0 +1,6 @@
+{
+  "name": "Radiarr",
+  "description": "Self-hosted virtual live radio stations from your personal music collection.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

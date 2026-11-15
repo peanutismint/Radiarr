@@ -1,0 +1,56 @@
+{
+  "name": "radiarr",
+  "private": true,
+  "version": "0.8.0",
+  "description": "Continuous live broadcast radio server and player for local music libraries",
+  "author": "peanutismint <peanutismint@users.noreply.github.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peanutismint/radiarr.git"
+  },
+  "homepage": "https://github.com/peanutismint/radiarr",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx server.ts",
+    "start": "node --import tsx server.ts",
+    "test": "node --import tsx --test src/tests/*.test.ts",
+    "build": "vite build",
+    "preview": "vite preview",
+    "clean": "rm -rf dist dist-desktop server.js",
+    "lint": "tsc --noEmit",
+    "desktop:build-main": "esbuild src/desktop/main.ts --bundle --platform=node --target=node20 --outfile=dist-desktop/main.cjs --external:electron --packages=external",
+    "desktop:build-preload": "esbuild src/desktop/preload.ts --bundle --platform=node --target=node20 --outfile=dist-desktop/preload.cjs --external:electron",
+    "desktop:build": "npm run build && npm run desktop:build-main && npm run desktop:build-preload",
+    "desktop:pack": "npm run desktop:build && npx electron-builder --dir",
+    "desktop:dist": "npm run desktop:build && npx electron-builder",
+    "desktop:start": "electron dist-desktop/main.cjs"
+  },
+  "main": "server.ts",
+  "dependencies": {
+    "@google/genai": "^2.4.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "music-metadata": "^12.1.0",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.4.21",
+    "electron": "^44.7.2",
+    "electron-builder": "^26.18.0",
+    "esbuild": "^0.27.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.21.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  }
+}
