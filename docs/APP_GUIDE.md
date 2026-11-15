@@ -19,6 +19,8 @@ Navigate to **Settings** in the top navigation bar. The **Libraries** tab opens 
 ### Connecting Local Folders or a Network NAS
 1. Switch to the **Local Folders** sub-tab under **Settings → Libraries**.
 2. Any immediate subfolder inside `/music` (such as `/music/albums` or `/music/singles`) is automatically discovered, or you can register custom container paths.
+   - In the desktop apps nothing is added automatically: Radiarr only uses the folders you add with **Add Media**, and any folder can be removed with its bin icon.
+   - A first import of a large library (especially from a NAS) can take a while. Press **Stop scan** next to the progress bar to stop it; tracks imported so far are kept, and the next scan picks up where it left off.
 3. If your music lives on an SMB/CIFS or NFS NAS, expand the **NAS & Docker Volume Helper** section to either mount the share directly or generate a ready-to-use `docker-compose.yml` volume block.
 
 ---

@@ -57,37 +57,46 @@ const resolveConfigDir = (): string => {
   return fallback;
 };
 
-const resolveMusicDir = (): string => {
+interface MusicRoot {
+  dir: string;
+  /**
+   * True when Radiarr owns a dedicated music root (Docker's /music, an explicit
+   * MUSIC_DIR, or ./data/music in development). Only then are its immediate
+   * subfolders auto-registered as libraries and demo files seeded into it.
+   */
+  autoDiscover: boolean;
+}
+
+const resolveMusicRoot = (configDir: string): MusicRoot => {
   if (process.env.MUSIC_DIR) {
-    return process.env.MUSIC_DIR;
+    return { dir: process.env.MUSIC_DIR, autoDiscover: true };
   }
+
+  // Desktop app: never guess at a music folder (it used to pick the user's
+  // personal Music folder and register everything inside it, e.g. "iTunes").
+  // Libraries are only ever the folders the user adds themselves. The directory
+  // below is an app-private placeholder and is not created or scanned.
+  if (process.versions.electron) {
+    return { dir: path.join(configDir, 'music'), autoDiscover: false };
+  }
+
   try {
     if (fs.existsSync('/music')) {
-      return '/music';
+      return { dir: '/music', autoDiscover: true };
     }
   } catch {
     // ignore
   }
 
-  // Native desktop default Music directories
-  if (process.platform === 'win32' && process.env.USERPROFILE) {
-    const winMusic = path.join(process.env.USERPROFILE, 'Music');
-    if (fs.existsSync(winMusic)) return winMusic;
-  } else if (process.platform === 'darwin' && process.env.HOME) {
-    const macMusic = path.join(process.env.HOME, 'Music');
-    if (fs.existsSync(macMusic)) return macMusic;
-  } else if (process.platform === 'linux' && process.env.HOME) {
-    const linuxMusic = path.join(process.env.HOME, 'Music');
-    if (fs.existsSync(linuxMusic)) return linuxMusic;
-  }
-
   const fallback = path.resolve(process.cwd(), 'data', 'music');
   fs.mkdirSync(fallback, { recursive: true });
-  return fallback;
+  return { dir: fallback, autoDiscover: true };
 };
 
 export const CONFIG_DIR = resolveConfigDir();
-export const MUSIC_DIR = resolveMusicDir();
+const musicRoot = resolveMusicRoot(CONFIG_DIR);
+export const MUSIC_DIR = musicRoot.dir;
+export const AUTO_DISCOVER_LIBRARIES = musicRoot.autoDiscover;
 export const DB_PATH = path.join(CONFIG_DIR, 'radiarr.db');
 export const ART_CACHE_DIR = path.join(CONFIG_DIR, 'art-cache');
 export const TRANSCODE_CACHE_DIR = path.join(CONFIG_DIR, 'transcode-cache');
