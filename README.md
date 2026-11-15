@@ -6,7 +6,10 @@
 [![Version](https://img.shields.io/badge/version-v0.8.0-indigo.svg)](https://github.com/peanutismint/radiarr/releases)
 [![Platform](https://img.shields.io/badge/platform-Docker%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-emerald.svg)](#install)
 
-![The Radiarr guide, showing nine stations and what each is playing right now](docs/screenshots/guide.png)
+| Guide | Now Playing | Station editor |
+| :---: | :---: | :---: |
+| ![The guide, showing every station and what each is playing right now](docs/screenshots/guide.png) | ![Now Playing, with the neighbouring stations one click away](docs/screenshots/now-playing.png) | ![Editing a station's rules, with a live count of matching tracks](docs/screenshots/edit-station.png) |
+| See what's on every station | Flip stations like a car radio | Build stations from simple rules |
 
 ## Contents
 
@@ -31,11 +34,6 @@ You spent years building a music collection. So why do you still end up:
 Radiarr is like [Tunarr](https://github.com/chrisbenincasa/tunarr), but for music. You describe the stations you want ("70s soft rock", "everything by Led Zeppelin in order", "chill in the morning, loud in the afternoon") and Radiarr keeps them on air forever. Tune in and you land mid-song, exactly where that station is on the clock. Don't like the song? Flip to the next station, the way you would in a car.
 
 ## Features
-
-| | |
-| :--- | :--- |
-| ![Now Playing view](docs/screenshots/now-playing.png) | ![Station curation view](docs/screenshots/curation.png) |
-| **Now Playing**, with the neighbouring stations one click away | **Curation**, where you build and reorder your dial |
 
 **📻 Stations that are always on.** Every station follows a fixed timeline worked out from the clock, not from a running process. Nothing plays, and no CPU is used, until you tune in. Open Radiarr on two devices and they play the same song at the same moment.
 
@@ -70,20 +68,34 @@ There are two ways to run Radiarr. Both give you the same app.
 
 ### Option 1: Docker
 
-```bash
-git clone https://github.com/peanutismint/radiarr.git
-cd radiarr
+Save this as `docker-compose.yml`, changing `/path/to/your/music` to your music folder (delete that line if you only use Plex):
+
+```yaml
+services:
+  radiarr:
+    image: ghcr.io/peanutismint/radiarr:latest
+    container_name: radiarr
+    restart: unless-stopped
+    ports:
+      - "8484:8484"
+    environment:
+      - TZ=America/Los_Angeles   # your timezone
+    volumes:
+      - ./config:/config
+      - /path/to/your/music:/music:ro
 ```
 
-Open `docker-compose.yml` and change `/path/to/your/music` to your music folder (you can skip this if you only use Plex). Then:
+Then start it:
 
 ```bash
-docker compose up -d --build
+docker compose up -d
 ```
 
 Open `http://localhost:8484`, or `http://<your-server-ip>:8484` from another device.
 
-If your music is on a network share, see `docker-compose.nas-example.yml`.
+To update later, run `docker compose pull` followed by `docker compose up -d`. The image works on regular PCs and servers, and on ARM devices such as a Raspberry Pi.
+
+If your music is on a network share, see `docker-compose.nas-example.yml`. To build the image yourself instead, clone this repo and run `docker compose up -d --build`.
 
 ### Option 2: Desktop app (Windows, macOS, Linux)
 
@@ -91,10 +103,11 @@ Download the installer for your system from [**Releases**](https://github.com/pe
 
 | System | File to download |
 | :--- | :--- |
-| Windows 10 / 11 | The `Setup` `.exe` (or the portable `.exe` if you prefer not to install) |
-| macOS, Apple Silicon (M1 or newer) | The `.dmg` with `arm64` in its name |
-| macOS, Intel | The `.dmg` without `arm64` in its name |
-| Linux | The `.AppImage`, or the `.deb` for Debian and Ubuntu |
+| Windows 10 / 11 | `Radiarr-x.x.x-Windows-Installer.exe` installs Radiarr with Start menu and desktop shortcuts. Recommended for most people. |
+| Windows, no install | `Radiarr-x.x.x-Windows-Portable.exe` runs straight from wherever you save it, for example a USB stick. Nothing is installed. |
+| macOS, Apple Silicon (M1 or newer) | `Radiarr-x.x.x-macOS-arm64.dmg` |
+| macOS, Intel | `Radiarr-x.x.x-macOS-x64.dmg` |
+| Linux | `Radiarr-x.x.x-Linux.AppImage`, or `Radiarr-x.x.x-Linux.deb` for Debian and Ubuntu |
 
 Not sure which Mac you have? Open the Apple menu and choose **About This Mac**. "Chip: Apple M..." means Apple Silicon. "Processor: Intel" means Intel.
 
