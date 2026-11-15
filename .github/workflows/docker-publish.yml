@@ -55,7 +55,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: radiarr.dockerfile
+          file: Dockerfile
           # Regular PCs and servers (amd64) plus Raspberry Pi / ARM NAS boxes (arm64).
           platforms: ${{ github.event_name == 'pull_request' && 'linux/amd64' || 'linux/amd64,linux/arm64' }}
           push: ${{ github.event_name != 'pull_request' }}

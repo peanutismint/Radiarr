@@ -3,7 +3,7 @@ services:
     image: radiarr:latest
     build:
       context: .
-      dockerfile: radiarr.dockerfile
+      dockerfile: Dockerfile
     container_name: radiarr
     restart: unless-stopped
     ports:

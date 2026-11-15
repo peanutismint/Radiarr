@@ -99,7 +99,7 @@ Open `http://localhost:8484`, or `http://<your-server-ip>:8484` from another dev
 
 To update later, run `docker compose pull` followed by `docker compose up -d`. The image works on regular PCs and servers, and on ARM devices such as a Raspberry Pi.
 
-If your music is on a network share, see `docker-compose.nas-example.yml`. To build the image yourself instead, clone this repo and run `docker compose up -d --build`.
+If your music is on a network share, see [`docs/examples/docker-compose.nas-example.yml`](docs/examples/docker-compose.nas-example.yml). To build the image yourself instead, clone this repo and run `docker compose up -d --build`.
 
 ### Option 2: Desktop app (Windows, macOS, Linux)
 
