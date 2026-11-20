@@ -6,6 +6,7 @@
 [![Version](https://img.shields.io/badge/version-v0.8.0-indigo.svg)](https://github.com/peanutismint/radiarr/releases)
 [![Platform](https://img.shields.io/badge/platform-Docker%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-emerald.svg)](#install)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-support%20Radiarr-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/peanutismint)
 
 **[▶ Try the live demo](https://peanutismint.github.io/Radiarr/demo/)** in your browser, no install needed, or visit the [Radiarr website](https://peanutismint.github.io/Radiarr/). It uses a fictional music library, so you can explore the guide, build stations and change settings.
 

@@ -150,6 +150,12 @@ p { margin: 0 0 1em; }
 .oss-card { text-align: center; padding: 64px 32px; border-radius: 28px; border: 1px solid #2d2d45; background: radial-gradient(500px 260px at 50% 0, rgba(99, 102, 241, .25), transparent 75%), var(--card); }
 .oss-card p { color: var(--muted); max-width: 620px; margin-inline: auto; font-size: 1.08rem; }
 
+.tip { margin-top: 2.4em; padding-top: 2em; border-top: 1px solid #2a2a40; }
+.tip .fine { margin-bottom: 1em; }
+.btn-coffee { background: #ffdd00; color: #111; box-shadow: 0 8px 26px -10px rgba(255, 221, 0, .55); }
+.btn-coffee:hover { background: #ffe433; }
+.btn-coffee svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
 /* Footer */
 .footer { border-top: 1px solid #1e1e2c; padding: 34px 0 40px; }
 .footer-inner { display: grid; grid-template-columns: auto 1fr; gap: 14px 30px; align-items: center; }
