@@ -17,6 +17,7 @@ import {
   formatBroadcastWallTime,
   useAppearance,
   type GuideVisibleMinutesPreference,
+  type GuideVisibleMinutesMobilePreference,
 } from '../hooks/useAppearance.ts';
 import { ChannelBadge, StationCategoryPill } from './ChannelBadge.tsx';
 
@@ -45,6 +46,16 @@ function isAlbumOrArtistChannel(station: StationWithStats): boolean {
   return hasArtists || hasAlbums || station.playMode === 'album_shuffle';
 }
 
+/** Timelines narrower than this (phones) use the phone zoom levels. */
+const PHONE_TIMELINE_MAX_PX = 560;
+const PHONE_ZOOM_OPTIONS = [5, 10, 15] as const;
+const DESKTOP_ZOOM_OPTIONS = [15, 25, 45] as const;
+
+function pixelsPerSecondFor(viewportWidthPx: number, minutes: number, isPhone: boolean): number {
+  const raw = viewportWidthPx / (minutes * 60);
+  return isPhone ? Math.max(0.15, Math.min(3, raw)) : Math.max(0.22, Math.min(1.15, raw));
+}
+
 export function GuideView({
   epg,
   loading,
@@ -65,6 +76,7 @@ export function GuideView({
   const isSyncingScrollRef = useRef<boolean>(false);
   const didInitialScrollRef = useRef<boolean>(false);
   const [viewportWidthPx, setViewportWidthPx] = useState<number>(750);
+  const [widthMeasured, setWidthMeasured] = useState<boolean>(false);
   const [scrollLeftPx, setScrollLeftPx] = useState<number>(0);
 
   // Measure the timeline viewport width so the configured visible span fits comfortably on both mobile & desktop
@@ -75,6 +87,7 @@ export function GuideView({
     const updateWidth = () => {
       if (el.clientWidth > 0) {
         setViewportWidthPx(el.clientWidth);
+        setWidthMeasured(true);
       }
       setScrollLeftPx(el.scrollLeft);
       if (
@@ -95,12 +108,19 @@ export function GuideView({
     };
   }, []);
 
-  // Compute dynamic pixels-per-second based on appearance.guideVisibleMinutes (15m / 25m / 45m)
-  const pixelsPerSecond = useMemo(() => {
-    const targetMinutes = appearance.guideVisibleMinutes || 25;
-    const raw = viewportWidthPx / (targetMinutes * 60);
-    return Math.max(0.22, Math.min(1.15, raw));
-  }, [viewportWidthPx, appearance.guideVisibleMinutes]);
+  // Phone-sized timelines get their own zoom levels (5m / 10m / 15m, like the iOS app),
+  // so song blocks are wide enough to read. Wider screens keep 15m / 25m / 45m.
+  const isPhoneTimeline = viewportWidthPx < PHONE_TIMELINE_MAX_PX;
+  const zoomOptions: readonly number[] = isPhoneTimeline ? PHONE_ZOOM_OPTIONS : DESKTOP_ZOOM_OPTIONS;
+  const visibleMinutes = isPhoneTimeline
+    ? appearance.guideVisibleMinutesMobile || 5
+    : appearance.guideVisibleMinutes || 25;
+
+  // Compute dynamic pixels-per-second for the visible span
+  const pixelsPerSecond = useMemo(
+    () => pixelsPerSecondFor(viewportWidthPx, visibleMinutes, isPhoneTimeline),
+    [viewportWidthPx, visibleMinutes, isPhoneTimeline]
+  );
 
   // Row height classes based on appearance.guideDensity (~20% tighter on mobile)
   const rowHeightClass =
@@ -173,11 +193,15 @@ export function GuideView({
     }
   };
 
-  const handleZoomChange = (mins: GuideVisibleMinutesPreference) => {
-    updateAppearance({ guideVisibleMinutes: mins });
+  const handleZoomChange = (mins: number) => {
+    if (isPhoneTimeline) {
+      updateAppearance({ guideVisibleMinutesMobile: mins as GuideVisibleMinutesMobilePreference });
+    } else {
+      updateAppearance({ guideVisibleMinutes: mins as GuideVisibleMinutesPreference });
+    }
     requestAnimationFrame(() => {
       if (timelineScrollRef.current) {
-        const newPPS = viewportWidthPx / (mins * 60);
+        const newPPS = pixelsPerSecondFor(viewportWidthPx, mins, isPhoneTimeline);
         const newNowLeft = Math.round(
           ((nowServerMs - windowStartMs) / 1000) * newPPS
         );
@@ -194,7 +218,8 @@ export function GuideView({
 
   // Position the "Now" marker ~15% from the left edge of the viewport on first load
   useEffect(() => {
-    if (!epg || didInitialScrollRef.current || !timelineScrollRef.current) return;
+    // Wait for the real width, so the zoom (and the Now position) is right before scrolling.
+    if (!epg || !widthMeasured || didInitialScrollRef.current || !timelineScrollRef.current) return;
     const container = timelineScrollRef.current;
     const leadInPx = Math.round(container.clientWidth * 0.15);
     const targetScroll = Math.max(0, nowLeftPx - leadInPx);
@@ -204,11 +229,12 @@ export function GuideView({
     }
     setScrollLeftPx(container.scrollLeft);
     didInitialScrollRef.current = true;
-  }, [epg, nowLeftPx]);
+  }, [epg, nowLeftPx, widthMeasured]);
 
-  // Generate 5-minute ruler ticks across the timeline window
+  // Ruler ticks every 5 minutes (every 2 minutes on the closest phone zoom)
+  const rulerStepMinutes = isPhoneTimeline && visibleMinutes <= 5 ? 2 : 5;
   const rulerTicks = useMemo(() => {
-    const stepMs = 5 * 60 * 1000;
+    const stepMs = rulerStepMinutes * 60 * 1000;
     const firstTick = Math.ceil(windowStartMs / stepMs) * stepMs;
     const ticks: Array<{ ms: number; leftPx: number; label: string }> = [];
     for (let t = firstTick; t <= windowEndMs; t += stepMs) {
@@ -220,7 +246,7 @@ export function GuideView({
       });
     }
     return ticks;
-  }, [windowStartMs, windowEndMs, pixelsPerSecond, appearance.timeFormat]);
+  }, [windowStartMs, windowEndMs, pixelsPerSecond, appearance.timeFormat, rulerStepMinutes]);
 
   if (loading && !epg) {
     return (
@@ -264,9 +290,8 @@ export function GuideView({
               <span className="hidden xs:inline text-zinc-400 dark:text-zinc-500 text-[10px] font-medium mr-0.5">
                 Zoom:
               </span>
-              {([15, 25, 45] as const).map((mins) => {
-                const isSelected =
-                  (appearance.guideVisibleMinutes || 25) === mins;
+              {zoomOptions.map((mins) => {
+                const isSelected = visibleMinutes === mins;
                 return (
                   <button
                     key={mins}

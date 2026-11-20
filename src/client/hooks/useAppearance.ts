@@ -3,6 +3,8 @@ import { useCallback, useEffect, useState } from 'react';
 export type TimeFormatPreference = '12h' | '24h';
 export type GuideDensityPreference = 'compact' | 'standard' | 'comfortable';
 export type GuideVisibleMinutesPreference = 15 | 25 | 45;
+/** Phone-sized guide zoom (matches the iOS app): 5, 10 or 15 minutes across the screen. */
+export type GuideVisibleMinutesMobilePreference = 5 | 10 | 15;
 export type NowPlayingBackdropPreference =
   | 'artwork_blur'
   | 'color_glow'
@@ -23,6 +25,7 @@ export interface AppearancePreferences {
   timeFormat: TimeFormatPreference;
   guideDensity: GuideDensityPreference;
   guideVisibleMinutes: GuideVisibleMinutesPreference;
+  guideVisibleMinutesMobile: GuideVisibleMinutesMobilePreference;
   guideShowRuleSummary: boolean;
   nowPlayingBackdrop: NowPlayingBackdropPreference;
   nowPlayingSleeveShape: NowPlayingSleeveShapePreference;
@@ -46,6 +49,7 @@ export const DEFAULT_APPEARANCE_PREFERENCES: AppearancePreferences = {
   timeFormat: '12h',
   guideDensity: 'standard',
   guideVisibleMinutes: 25,
+  guideVisibleMinutesMobile: 5,
   guideShowRuleSummary: true,
   nowPlayingBackdrop: 'artwork_blur',
   nowPlayingSleeveShape: 'rounded',
@@ -101,6 +105,12 @@ export function getStoredAppearancePreferences(): AppearancePreferences {
         parsed.guideVisibleMinutes === 45
           ? parsed.guideVisibleMinutes
           : DEFAULT_APPEARANCE_PREFERENCES.guideVisibleMinutes,
+      guideVisibleMinutesMobile:
+        parsed.guideVisibleMinutesMobile === 5 ||
+        parsed.guideVisibleMinutesMobile === 10 ||
+        parsed.guideVisibleMinutesMobile === 15
+          ? parsed.guideVisibleMinutesMobile
+          : DEFAULT_APPEARANCE_PREFERENCES.guideVisibleMinutesMobile,
       guideShowRuleSummary:
         typeof parsed.guideShowRuleSummary === 'boolean'
           ? parsed.guideShowRuleSummary

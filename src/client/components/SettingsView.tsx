@@ -95,6 +95,8 @@ export function SettingsView({
 }: SettingsViewProps) {
   const [activeSubTab, setActiveSubTab] = useState<SettingsSubTab>('sources');
   const { appearance, updateAppearance, resetAppearance } = useAppearance();
+  // Phones use the guide's phone zoom levels (5 / 10 / 15 minutes), so offer those here.
+  const isPhoneScreen = typeof window !== 'undefined' && window.innerWidth < 640;
   const { theme, setTheme } = useTheme();
 
   const defaultStation =
@@ -936,21 +938,28 @@ export function SettingsView({
                   Visible Timeline Window
                 </span>
                 <div className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-zinc-100 dark:bg-zinc-950 border border-zinc-200/80 dark:border-zinc-800">
-                  {(
-                    [
-                      { mins: 15, label: '15m (Zoomed)' },
-                      { mins: 25, label: '25m (Default)' },
-                      { mins: 45, label: '45m (Wide)' },
-                    ] as const
+                  {(isPhoneScreen
+                    ? ([
+                        { mins: 5, label: '5m (Default)' },
+                        { mins: 10, label: '10m' },
+                        { mins: 15, label: '15m (Wide)' },
+                      ] as const)
+                    : ([
+                        { mins: 15, label: '15m (Zoomed)' },
+                        { mins: 25, label: '25m (Default)' },
+                        { mins: 45, label: '45m (Wide)' },
+                      ] as const)
                   ).map(({ mins, label }) => (
                     <button
                       key={mins}
                       type="button"
                       onClick={() =>
-                        updateAppearance({ guideVisibleMinutes: mins })
+                        isPhoneScreen
+                          ? updateAppearance({ guideVisibleMinutesMobile: mins as 5 | 10 | 15 })
+                          : updateAppearance({ guideVisibleMinutes: mins as 15 | 25 | 45 })
                       }
                       className={`py-2 px-2 rounded-lg text-xs font-medium font-mono tabular-nums transition cursor-pointer ${
-                        appearance.guideVisibleMinutes === mins
+                        (isPhoneScreen ? appearance.guideVisibleMinutesMobile : appearance.guideVisibleMinutes) === mins
                           ? 'bg-white dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400 shadow-xs'
                           : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
                       }`}
