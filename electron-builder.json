@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "com.radiarr.app",
   "productName": "Radiarr",
-  "copyright": "Copyright \u00a9 2026 Radiarr",
+  "copyright": "Copyright © 2026 Radiarr",
   "directories": {
     "output": "release",
     "buildResources": "assets"
@@ -62,9 +62,13 @@
     ],
     "category": "public.app-category.music",
     "darkModeSupport": true,
-    "identity": null,
     "artifactName": "Radiarr-${version}-macOS-${arch}.${ext}",
-    "icon": "assets/icon.png"
+    "icon": "assets/icon.png",
+    "hardenedRuntime": true,
+    "gatekeeperAssess": false,
+    "entitlements": "assets/entitlements.mac.plist",
+    "entitlementsInherit": "assets/entitlements.mac.plist",
+    "notarize": false
   },
   "linux": {
     "target": [

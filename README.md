@@ -119,21 +119,16 @@ Closing the window keeps Radiarr running in the system tray, so other devices on
 
 #### Security warnings on first launch
 
-The desktop app is not yet code-signed, so your computer will warn you the first time. This is expected.
+Your computer may ask you to confirm the first time you open Radiarr. This is normal for apps downloaded outside an app store.
 
-**macOS** says the app "cannot be opened" or is from an unidentified developer:
+**macOS** may say Apple could not verify that Radiarr is free of malware:
 
-1. Open **System Settings**, then **Privacy & Security**.
-2. Scroll down to the message about Radiarr and click **Open Anyway**.
-3. Confirm with your password or Touch ID. You only need to do this once.
+1. Click **Done** (not Move to Bin).
+2. Open **System Settings**, then **Privacy & Security**.
+3. Scroll down to the message about Radiarr and click **Open Anyway**.
+4. Confirm with your password or Touch ID. You only need to do this once.
 
-If macOS says the app "is damaged", open Terminal and run:
-
-```bash
-xattr -cr /Applications/Radiarr.app
-```
-
-**Windows** shows a blue "Windows protected your PC" box:
+**Windows** may show a blue "Windows protected your PC" box:
 
 1. Click **More info**.
 2. Click **Run anyway**.

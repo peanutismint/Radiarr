@@ -65,7 +65,31 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libarchive-tools libfuse2 || sudo apt-get install -y libarchive-tools libfuse2t64 || true
 
+      # macOS: if the Apple Developer secrets are set, the app is signed with the
+      # Developer ID certificate and notarized by Apple, so it opens with no warning.
+      # Without them it gets a free "ad-hoc" signature, which macOS treats as an
+      # unidentified developer (Open Anyway) rather than reporting the app as damaged.
+      - name: Package with Electron Builder (macOS)
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          CSC_LINK: ${{ secrets.MAC_CERT_P12_BASE64 }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CERT_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          if [ -n "$CSC_LINK" ] && [ -n "$APPLE_ID" ] && [ -n "$APPLE_APP_SPECIFIC_PASSWORD" ] && [ -n "$APPLE_TEAM_ID" ]; then
+            echo "Signing with Developer ID and notarizing with Apple"
+            npx electron-builder ${{ matrix.build_args }} --publish never -c.mac.notarize=true
+          else
+            echo "Apple Developer secrets not set: using an ad-hoc signature"
+            unset CSC_LINK CSC_KEY_PASSWORD
+            CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder ${{ matrix.build_args }} --publish never -c.mac.identity=-
+          fi
+
       - name: Package with Electron Builder
+        if: runner.os != 'macOS'
         run: npx electron-builder ${{ matrix.build_args }} --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
