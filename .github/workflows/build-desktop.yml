@@ -35,10 +35,8 @@ jobs:
             artifact_pattern: release/*.dmg
           - os: ubuntu-latest
             platform: Linux
-            build_args: --linux AppImage deb
-            artifact_pattern: |
-              release/*.AppImage
-              release/*.deb
+            build_args: --linux AppImage
+            artifact_pattern: release/*.AppImage
 
     steps:
       - name: Checkout repository

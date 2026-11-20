@@ -114,7 +114,7 @@ Download the installer for your system from [**Releases**](https://github.com/pe
 | Windows, no install | `Radiarr-x.x.x-Windows-Portable.exe` runs straight from wherever you save it, for example a USB stick. Nothing is installed. |
 | macOS, Apple Silicon (M1 or newer) | `Radiarr-x.x.x-macOS-arm64.dmg` |
 | macOS, Intel | `Radiarr-x.x.x-macOS-x64.dmg` |
-| Linux | `Radiarr-x.x.x-Linux.AppImage`, or `Radiarr-x.x.x-Linux.deb` for Debian and Ubuntu |
+| Linux | `Radiarr-x.x.x-Linux.AppImage` runs on most Linux systems. Make it executable (right-click > Properties > Permissions, or `chmod +x`), then double-click it. |
 
 Not sure which Mac you have? Open the Apple menu and choose **About This Mac**. "Chip: Apple M..." means Apple Silicon. "Processor: Intel" means Intel.
 
