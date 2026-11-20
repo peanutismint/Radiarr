@@ -2,7 +2,7 @@
   "name": "radiarr",
   "private": true,
   "license": "AGPL-3.0-only",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Continuous live broadcast radio server and player for local music libraries",
   "author": "peanutismint <peanutismint@users.noreply.github.com>",
   "repository": {
