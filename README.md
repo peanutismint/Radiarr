@@ -3,7 +3,7 @@
 > **Your personal music library, turned into your dream radio dial.**
 > Always-on virtual radio stations built from your **Plex** library, local folders, or NAS. Open it, and something good is already playing.
 
-[![Version](https://img.shields.io/badge/version-v0.8.0-indigo.svg)](https://github.com/peanutismint/radiarr/releases)
+[![Latest release](https://img.shields.io/github/v/release/peanutismint/radiarr?label=version&color=indigo)](https://github.com/peanutismint/radiarr/releases/latest)
 [![Platform](https://img.shields.io/badge/platform-Docker%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-emerald.svg)](#install)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-support%20Radiarr-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/peanutismint)
