@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radiarr · Your music library, on the radio</title>
+<meta name="description" content="Radiarr turns your own music library into always-on radio stations. Build stations from simple rules, flip between them like a car radio, and tune in from any browser. Free and open source.">
+<meta name="theme-color" content="#0b0b12">
+<meta property="og:title" content="Radiarr · Your music library, on the radio">
+<meta property="og:description" content="Always-on virtual radio stations built from your Plex library or music folders. Free and open source.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="img/guide.webp">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="Radiarr home">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg></span>
+      Radiarr
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="#features">Features</a>
+      <a href="#demo">Live demo</a>
+      <a href="#platforms">Get Radiarr</a>
+      <a class="btn btn-ghost btn-sm" href="https://github.com/peanutismint/radiarr">
+        <svg class="gh" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot"></span> On air now, all day, every day</p>
+        <h1>Your music library,<br><span class="grad">on the radio.</span></h1>
+        <p class="lede">Radiarr turns the music you already own into always-on radio stations. Build a station from a few simple rules, then flip between them like the dial in your car. Tune in and something good is already playing.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#demo">Try the live demo</a>
+          <a class="btn btn-ghost" href="https://github.com/peanutismint/radiarr">View on GitHub</a>
+        </div>
+        <p class="fine">Free and open source. Works with Plex and your own music folders.</p>
+      </div>
+      <div class="hero-art">
+        <figure class="browser">
+          <div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+          <img src="img/guide.webp" width="1600" height="956" alt="The Radiarr guide, showing eight stations and what each one is playing right now">
+        </figure>
+        <figure class="phone phone-hero">
+          <img src="img/phone-play.webp" width="780" height="1688" alt="Radiarr on a phone, playing a song with the neighbouring stations either side">
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why -->
+  <section class="why wrap">
+    <h2 class="section-title">You spent years building your collection.<br>So why can't you decide what to play?</h2>
+    <div class="why-grid">
+      <div class="why-card"><span class="why-num">01</span><p>Scrolling an endless artist list and never picking anything.</p></div>
+      <div class="why-card"><span class="why-num">02</span><p>Playing the same comfort playlist for the 400th time.</p></div>
+      <div class="why-card"><span class="why-num">03</span><p>Giving up and letting a streaming algorithm choose for you.</p></div>
+    </div>
+    <p class="why-answer">Radiarr brings back the best thing about radio: you don't have to choose. Pick a station, land mid-song, and if it's not right, flip to the next one.</p>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="features wrap">
+    <p class="eyebrow center">Features</p>
+    <h2 class="section-title center">Everything a radio dial should be,<br>built from music you love.</h2>
+    <div class="feature-grid">
+      <article class="feature">
+        <div class="ficon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>Always on air</h3>
+        <p>Every station runs on its own timeline, worked out from the clock. Tune in at any moment and you land exactly where the station is, just like real radio. Two devices tuned to the same station play the same song at the same time.</p>
+      </article>
+      <article class="feature">
+        <div class="ficon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/><circle cx="18" cy="16" r="3"/></svg></div>
+        <h3>Stations from simple rules</h3>
+        <p>Mix and match libraries, artists, albums, genres and decades. A live counter shows how many songs match as you go, and smart stations pick up new music automatically.</p>
+      </article>
+      <article class="feature">
+        <div class="ficon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></div>
+        <h3>Three ways to play</h3>
+        <p>Track Shuffle plays every song once before repeating any. Album Shuffle keeps albums whole. Straight plays a whole discography in release order, perfect for a deep dive.</p>
+      </article>
+      <article class="feature">
+        <div class="ficon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/></svg></div>
+        <h3>Crossfades and gapless albums</h3>
+        <p>Shuffle stations blend songs together with 2, 3, 5 or 8 second crossfades. Albums play without a gap between tracks, the way they were meant to be heard.</p>
+      </article>
+      <article class="feature">
+        <div class="ficon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v6.5M4.5 16.5l5.4-3.2M19.5 16.5l-5.4-3.2"/></svg></div>
+        <h3>Made for the car</h3>
+        <p>Your steering wheel's next and previous buttons switch stations like radio presets, or skip songs if you prefer. Lock screen controls and Bluetooth just work.</p>
+      </article>
+      <article class="feature">
+        <div class="ficon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg></div>
+        <h3>A TV-style guide</h3>
+        <p>See what's on every station right now and what's coming up next. Click any song in the guide, past or future, to play it now, then jump straight back to live.</p>
+      </article>
+      <article class="feature">
+        <div class="ficon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="13" rx="2"/><path d="M8 21h8M12 18v3"/></svg></div>
+        <h3>Works with your other players</h3>
+        <p>Radiarr publishes its stations as a standard M3U playlist with an XMLTV guide, so you can add them to Jellyfin, Plex Live TV, Kodi, TiviMate or VLC. It can also cast to Google Cast speakers.</p>
+      </article>
+      <article class="feature">
+        <div class="ficon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 4.5 3.4 8.4 8 9 4.6-.6 8-4.5 8-9V7l-8-4Z"/></svg></div>
+        <h3>Yours, and private</h3>
+        <p>Radiarr runs on your own computer or home server. Your music and your listening never leave your network, and stations use no processing power until someone tunes in.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Showcase -->
+  <section class="showcase wrap">
+    <div class="show-row">
+      <div class="show-copy">
+        <p class="eyebrow">Now Playing</p>
+        <h2>Flip stations like a car radio.</h2>
+        <p>Big artwork, the song and album at a glance, what's up next, and the stations either side one tap away. Don't like what's on? Skip the song, or change the channel and land mid-song on something else.</p>
+      </div>
+      <figure class="browser"><div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <img loading="lazy" src="img/now-playing.webp" width="1600" height="1122" alt="The Now Playing screen, with large artwork and the previous and next stations either side"></figure>
+    </div>
+    <div class="show-row flip">
+      <div class="show-copy">
+        <p class="eyebrow">Station editor</p>
+        <h2>“80s soft rock.” “Every Jimmy Eat World album, in order.” Done.</h2>
+        <p>Name it, choose a few rules and watch the matching song count update live. Pick a thumbnail from the station's own album art, choose a badge colour, and it's on air.</p>
+      </div>
+      <figure class="browser"><div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <img loading="lazy" src="img/station-editor.webp" width="1600" height="1122" alt="Editing a station, with a live count of matching tracks and artwork to choose from"></figure>
+    </div>
+    <div class="show-row">
+      <div class="show-copy">
+        <p class="eyebrow">Your lineup</p>
+        <h2>Starter stations in seconds.</h2>
+        <p>Radiarr looks at your library and suggests stations by genre, era and artist, so you have a full dial from the first minute. Reorder, duplicate, reshuffle or switch stations off, one at a time or in bulk.</p>
+      </div>
+      <figure class="browser"><div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <img loading="lazy" src="img/lineup.webp" width="1600" height="956" alt="The station lineup, listing eight stations with their track counts and crossfade settings"></figure>
+    </div>
+  </section>
+
+  <!-- Demo -->
+  <section id="demo" class="demo">
+    <div class="wrap demo-grid">
+      <div class="demo-copy">
+        <p class="eyebrow">Live demo</p>
+        <h2>Try it right here.</h2>
+        <p>This is the real Radiarr app running in your browser, with a made-up music library and generated audio. Flip stations, browse the guide, build your own station. Nothing to install, and any changes stay in your browser.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary" type="button" data-start-demo>Start the demo</button>
+          <a class="btn btn-ghost" href="demo/" target="_blank" rel="noopener">Open full screen</a>
+        </div>
+        <p class="fine">Tip: the full screen version shows the desktop layout.</p>
+      </div>
+      <div class="demo-device">
+        <div class="phone phone-demo" id="demo-phone">
+          <button class="demo-poster" type="button" data-start-demo aria-label="Start the live demo">
+            <img loading="lazy" src="img/phone-guide.webp" width="780" height="1688" alt="">
+            <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+            <span class="demo-label">Tap to tune in</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platforms -->
+  <section id="platforms" class="platforms wrap">
+    <p class="eyebrow center">Get Radiarr</p>
+    <h2 class="section-title center">Run it at home. Listen anywhere.</h2>
+    <p class="sub center">Radiarr runs on an always-on home server or your everyday computer. Then any phone, tablet, laptop or smart TV browser on your network can tune in.</p>
+    <div class="platform-grid">
+      <a class="platform" href="https://github.com/peanutismint/radiarr#option-1-docker">
+        <span class="badge badge-live">Available now</span>
+        <h3>Docker</h3>
+        <p>For a home server or NAS that's always on. One short compose file, and it runs on regular PCs and on ARM devices like a Raspberry Pi.</p>
+        <span class="more">Install guide →</span>
+      </a>
+      <a class="platform" href="https://github.com/peanutismint/radiarr#option-2-desktop-app-windows-macos-linux">
+        <span class="badge badge-beta">In testing</span>
+        <h3>Windows, macOS and Linux</h3>
+        <p>A desktop app for trying Radiarr out or running it on your everyday computer. It keeps playing from the system tray when you close the window.</p>
+        <span class="more">Desktop details →</span>
+      </a>
+      <a class="platform" href="https://github.com/peanutismint/radiarr#listening-on-your-phone-and-in-the-car">
+        <span class="badge badge-live">Available now</span>
+        <h3>Any web browser</h3>
+        <p>Open your Radiarr address on your phone, and playback carries on with the screen locked, with artwork and controls on the lock screen.</p>
+        <span class="more">Phone and car tips →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Mobile coming soon -->
+  <section class="mobile">
+    <div class="wrap mobile-grid">
+      <div class="mobile-copy">
+        <p class="eyebrow">Coming soon</p>
+        <h2>Radiarr for iPhone and Android.</h2>
+        <p>A standalone app that connects straight to your Plex server. No home server, no setup, no browser tab to keep open.</p>
+        <ul class="ticks">
+          <li>Builds and runs your stations right on your phone</li>
+          <li>Starts playing by itself when you get in the car</li>
+          <li>Picks up again after calls, Siri and navigation prompts</li>
+          <li>Steering wheel controls to flip stations or skip songs</li>
+          <li>Syncs your stations from a Radiarr server, if you have one</li>
+        </ul>
+        <div class="store-row">
+          <span class="store" aria-disabled="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.6 2.1-3.7-1.1-1.7-2.9-1.9-3.5-1.9-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8-1.6 0-3.2 1-4 2.4-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4.9-1.4 1.3-2.7 1.3-2.8 0 0-2.5-1-2.5-3.9ZM14 5.4c.7-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.6 2.8-1.4Z"/></svg>
+            <span><small>Coming soon to the</small>App Store</span>
+          </span>
+          <span class="store" aria-disabled="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 2.3c-.3.3-.4.7-.4 1.3v16.8c0 .5.2 1 .4 1.3l9.5-9.7-9.5-9.7Zm10.6 10.8 2.9 3-10.7 6.1c-.6.3-1.1.3-1.5.1l9.3-9.2Zm0-2.2L4.9 1.7c.4-.2 1-.2 1.5.1l10.7 6.1-2.9 3Zm4.1-2.1 3 1.7c.9.5.9 1.4 0 1.9l-3 1.7-3.2-3.3 3.2-2Z"/></svg>
+            <span><small>Coming soon to</small>Google Play</span>
+          </span>
+        </div>
+        <p class="fine"><a href="https://github.com/peanutismint/radiarr">Star the project on GitHub</a> to hear when it launches.</p>
+      </div>
+      <div class="mobile-art">
+        <figure class="phone phone-tilt-l"><img loading="lazy" src="img/phone-guide.webp" width="780" height="1688" alt="The Radiarr guide on a phone"></figure>
+        <figure class="phone phone-tilt-r"><img loading="lazy" src="img/phone-play.webp" width="780" height="1688" alt="Radiarr's Play screen on a phone"></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Open source -->
+  <section class="oss wrap">
+    <div class="oss-card">
+      <h2>Free and open source.</h2>
+      <p>The Radiarr server and web app are free software under the AGPL-3.0 licence. Read the code, report a bug, suggest a feature, or just leave a star to help other people find it.</p>
+      <div class="cta-row center">
+        <a class="btn btn-primary" href="https://github.com/peanutismint/radiarr">Visit Radiarr on GitHub</a>
+        <a class="btn btn-ghost" href="https://github.com/peanutismint/radiarr/issues">Report an issue</a>
+      </div>
+      <!-- Tip jar goes here once a platform is chosen. -->
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span class="brand brand-sm"><span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg></span>Radiarr</span>
+    <nav aria-label="Footer">
+      <a href="demo/">Live demo</a>
+      <a href="https://github.com/peanutismint/radiarr">GitHub</a>
+      <a href="https://github.com/peanutismint/radiarr/blob/main/docs/APP_GUIDE.md">App guide</a>
+      <a href="https://github.com/peanutismint/radiarr/blob/main/LICENSE">Licence</a>
+    </nav>
+    <p class="fine">Not affiliated with Plex, Jellyfin, Apple or Google. Demo music and artwork are fictional.</p>
+  </div>
+</footer>
+
+<script>
+  // Load the live demo only when asked, so the page itself stays quick.
+  document.querySelectorAll('[data-start-demo]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      var phone = document.getElementById('demo-phone');
+      if (!phone.querySelector('iframe')) {
+        var frame = document.createElement('iframe');
+        frame.src = 'demo/';
+        frame.title = 'Radiarr live demo';
+        frame.allow = 'autoplay';
+        phone.replaceChildren(frame);
+      }
+      phone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
+</script>
+</body>
+</html>

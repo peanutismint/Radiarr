@@ -7,7 +7,7 @@
 [![Platform](https://img.shields.io/badge/platform-Docker%20%7C%20Windows%20%7C%20macOS%20%7C%20Linux-emerald.svg)](#install)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 
-**[▶ Try the live demo](https://peanutismint.github.io/Radiarr/)** in your browser, no install needed. It uses a fictional music library, so you can explore the guide, build stations and change settings.
+**[▶ Try the live demo](https://peanutismint.github.io/Radiarr/demo/)** in your browser, no install needed, or visit the [Radiarr website](https://peanutismint.github.io/Radiarr/). It uses a fictional music library, so you can explore the guide, build stations and change settings.
 
 | Guide | Now Playing | Station editor |
 | :---: | :---: | :---: |

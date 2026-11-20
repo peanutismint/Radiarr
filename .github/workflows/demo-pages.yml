@@ -1,7 +1,8 @@
-name: Publish Online Demo (GitHub Pages)
+name: Publish Website and Online Demo (GitHub Pages)
 
-# Builds the browser-only demo (fictional library, no server) and publishes it to GitHub Pages
-# on every change merged to main. Pull requests only check that the demo still builds.
+# Builds the Radiarr website (site/) and the browser-only demo (fictional library, no server),
+# and publishes them to GitHub Pages on every change merged to main: the website at the root,
+# the demo at /demo/. Pull requests only check that both still build.
 #
 # One-time setup: repo Settings > Pages > Source: "GitHub Actions".
 # (GitHub Pages is free for public repositories.)
@@ -24,7 +25,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build demo
+    name: Build website and demo
     runs-on: ubuntu-latest
     env:
       ELECTRON_SKIP_BINARY_DOWNLOAD: 1
@@ -40,14 +41,14 @@ jobs:
       - name: Install dependencies
         run: npm install --no-audit --no-fund --legacy-peer-deps
 
-      - name: Build demo
-        run: npm run demo:build
+      - name: Build website and demo
+        run: npm run site:build
 
-      - name: Upload demo
+      - name: Upload site
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist-demo
+          path: dist-site
 
   deploy:
     name: Publish to GitHub Pages
