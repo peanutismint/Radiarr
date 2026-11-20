@@ -17,6 +17,13 @@ on:
 permissions:
   contents: write
 
+# Publishing a release from a new tag fires both the tag push and the release
+# event. Sharing one group per tag means the second run cancels the first, so
+# the (expensive) Windows and macOS builds only run once per version.
+concurrency:
+  group: desktop-${{ github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build Desktop (${{ matrix.platform }})
@@ -96,6 +103,8 @@ jobs:
           name: radiarr-${{ matrix.platform }}-builds
           path: ${{ matrix.artifact_pattern }}
           if-no-files-found: warn
+          # The release keeps the real copies, so these only need to last a few days.
+          retention-days: 3
 
       - name: Publish to GitHub Releases
         if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release' || inputs.publish_release == true
