@@ -175,26 +175,26 @@ async function applyDockMode(mode: DockMode): Promise<void> {
   rebuildTrayMenu();
 }
 
-// SVG tray icon rendering
+// Tray / menu bar icon. Electron cannot draw SVG here, so these are PNGs.
+// macOS uses a black "Template" image, which macOS recolours to suit light,
+// dark and greyscale menu bars. Windows and Linux use the indigo version.
+// Files ending in @2x are picked up automatically on high-resolution screens.
 function createTrayIcon(): Electron.NativeImage {
-  // A clean 32x32 radio wave icon with transparent background and indigo accents
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/>
-    <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/>
-    <circle cx="12" cy="12" r="2.5" fill="#6366f1"/>
-    <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/>
-    <path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/>
-  </svg>`;
-
-  try {
-    const icon = nativeImage.createFromBuffer(Buffer.from(svg));
-    if (process.platform === 'darwin') {
-      icon.setTemplateImage(true);
-    }
-    return icon.resize({ width: 18, height: 18 });
-  } catch {
+  const fileName = process.platform === 'darwin' ? 'trayTemplate.png' : 'tray.png';
+  const candidates = [
+    path.join(process.resourcesPath || '', 'tray', fileName),
+    path.join(__dirname, '..', 'assets', 'tray', fileName),
+  ];
+  const iconPath = candidates.find((p) => fs.existsSync(p));
+  if (!iconPath) {
+    console.warn('Tray icon not found in', candidates);
     return nativeImage.createEmpty();
   }
+  const icon = nativeImage.createFromPath(iconPath);
+  if (process.platform === 'darwin') {
+    icon.setTemplateImage(true);
+  }
+  return icon;
 }
 
 function triggerLibraryRescan(): void {

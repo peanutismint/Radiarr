@@ -110,6 +110,10 @@
     {
       "from": "assets/icon.png",
       "to": "icon.png"
+    },
+    {
+      "from": "assets/tray",
+      "to": "tray"
     }
   ]
 }
