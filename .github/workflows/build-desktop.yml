@@ -31,10 +31,8 @@ jobs:
             artifact_pattern: release/*.exe
           - os: macos-latest
             platform: macOS
-            build_args: --mac dmg zip --x64 --arm64
-            artifact_pattern: |
-              release/*.dmg
-              release/*.zip
+            build_args: --mac dmg --x64 --arm64
+            artifact_pattern: release/*.dmg
           - os: ubuntu-latest
             platform: Linux
             build_args: --linux AppImage deb
