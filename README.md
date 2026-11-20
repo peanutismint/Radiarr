@@ -25,6 +25,8 @@
 - [Security and remote access](#security-and-remote-access)
 - [Roadmap](#roadmap)
 - [Development](#development)
+- [Code signing policy](#code-signing-policy)
+- [Privacy](#privacy)
 - [License](#license)
 
 ## Why Radiarr?
@@ -225,6 +227,28 @@ Where things live:
 | `src/shared/` | Code used by both the interface and the server |
 | `demo/` | The online demo: a stand-in server that runs in the browser |
 | `docs/` | The application guide and screenshots |
+
+## Code signing policy
+
+Windows releases are being prepared for free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org). Until that is approved, Windows builds are unsigned. macOS builds are signed with a Developer ID certificate and notarized by Apple.
+
+All release files are built automatically by GitHub Actions from the source code in this repository. Nothing is built or uploaded by hand.
+
+**Team roles**
+
+- Committers and reviewers: [peanutismint](https://github.com/peanutismint)
+- Approvers: [peanutismint](https://github.com/peanutismint)
+
+Every signed release is approved manually by an approver.
+
+## Privacy
+
+Radiarr does not collect analytics or telemetry, and does not send your data to the Radiarr project or anyone else. It only connects to:
+
+- **Plex** (plex.tv and your own Plex server), and only if you choose to sign in with Plex, to read your music libraries and stream them.
+- **Google Cast** (gstatic.com), which your browser loads to offer casting to Chromecast and Google speakers.
+
+Your library, stations and settings are stored on your own computer or server.
 
 ## License
 
