@@ -457,6 +457,10 @@ declare global {
       platform?: string;
       pickFolder: () => Promise<string | null>;
       openExternal?: (url: string) => Promise<void>;
+      getDockMode?: () => Promise<'menubar' | 'dock' | 'both' | null>;
+      setDockMode?: (
+        mode: 'menubar' | 'dock' | 'both'
+      ) => Promise<'menubar' | 'dock' | 'both' | null>;
       getInfo?: () => Promise<{
         platform: string;
         version: string;

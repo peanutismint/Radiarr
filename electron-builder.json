@@ -68,7 +68,10 @@
     "gatekeeperAssess": false,
     "entitlements": "assets/entitlements.mac.plist",
     "entitlementsInherit": "assets/entitlements.mac.plist",
-    "notarize": false
+    "notarize": false,
+    "extendInfo": {
+      "LSUIElement": true
+    }
   },
   "linux": {
     "target": [

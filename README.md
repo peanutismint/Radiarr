@@ -25,7 +25,7 @@
 - [Security and remote access](#security-and-remote-access)
 - [Roadmap](#roadmap)
 - [Development](#development)
-- [Code signing policy](#code-signing-policy)
+- [Code signing](#code-signing)
 - [Privacy](#privacy)
 - [License](#license)
 
@@ -117,7 +117,7 @@ Download the installer for your system from [**Releases**](https://github.com/pe
 
 Not sure which Mac you have? Open the Apple menu and choose **About This Mac**. "Chip: Apple M..." means Apple Silicon. "Processor: Intel" means Intel.
 
-Closing the window keeps Radiarr running in the system tray, so other devices on your network can keep listening at `http://<your-computer-ip>:8484`. Quit from the tray icon to stop it.
+Closing the window keeps Radiarr running, so other devices on your network can keep listening at `http://<your-computer-ip>:8484`. On Windows and Linux it stays in the system tray. On a Mac it lives in the menu bar by default, and you can choose the menu bar, the Dock, or both in **Settings → Appearance**. Quit from the tray or menu bar icon to stop it.
 
 #### Security warnings on first launch
 
@@ -228,9 +228,9 @@ Where things live:
 | `demo/` | The online demo: a stand-in server that runs in the browser |
 | `docs/` | The application guide and screenshots |
 
-## Code signing policy
+## Code signing
 
-Windows releases are being prepared for free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org). Until that is approved, Windows builds are unsigned. macOS builds are signed with a Developer ID certificate and notarized by Apple.
+macOS builds are signed with a Developer ID certificate and notarized by Apple. Windows builds are not yet code-signed.
 
 All release files are built automatically by GitHub Actions from the source code in this repository. Nothing is built or uploaded by hand.
 

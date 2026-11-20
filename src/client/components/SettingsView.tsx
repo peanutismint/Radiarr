@@ -128,12 +128,34 @@ export function SettingsView({
   const [isPickingFolder, setIsPickingFolder] = useState(false);
   const [showDesktopInfoModal, setShowDesktopInfoModal] = useState(false);
 
+  // macOS desktop app: show Radiarr in the menu bar, the Dock, or both
+  type DockMode = 'menubar' | 'dock' | 'both';
+  const [dockMode, setDockModeState] = useState<DockMode | null>(null);
+  const [isSavingDockMode, setIsSavingDockMode] = useState(false);
+
   useEffect(() => {
     if (typeof window !== 'undefined' && window.radiarrDesktop?.isDesktop) {
       setIsDesktopApp(true);
       setDesktopPlatform(window.radiarrDesktop.platform || 'desktop');
+      if (window.radiarrDesktop.getDockMode) {
+        window.radiarrDesktop
+          .getDockMode()
+          .then((mode) => setDockModeState(mode))
+          .catch(() => setDockModeState(null));
+      }
     }
   }, []);
+
+  const handleDockModeChange = async (mode: DockMode) => {
+    if (!window.radiarrDesktop?.setDockMode || mode === dockMode) return;
+    setIsSavingDockMode(true);
+    try {
+      const applied = await window.radiarrDesktop.setDockMode(mode);
+      setDockModeState(applied);
+    } finally {
+      setIsSavingDockMode(false);
+    }
+  };
 
   const handleBrowseNativeFolder = async () => {
     if (window.radiarrDesktop?.pickFolder) {
@@ -724,6 +746,57 @@ export function SettingsView({
       {/* SUB-TAB 2: Appearance (Theme, Clock Format, EPG Guide Density, Now Playing Stage, Channel Badges) */}
       {activeSubTab === 'appearance' && (
         <div className="space-y-4">
+          {/* macOS desktop app only: menu bar / Dock placement */}
+          {dockMode && (
+            <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm space-y-4">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Monitor className="w-4 h-4 text-indigo-500" />
+                  <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                    Show Radiarr In
+                  </h2>
+                </div>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                  Choose where Radiarr appears on your Mac. You can also change this from the Radiarr menu bar icon.
+                </p>
+              </div>
+              <div
+                role="radiogroup"
+                aria-label="Show Radiarr in"
+                className="inline-flex flex-wrap items-center gap-1 bg-zinc-100 dark:bg-zinc-800/80 p-1 rounded-xl"
+              >
+                {(
+                  [
+                    { value: 'menubar', label: 'Menu Bar' },
+                    { value: 'dock', label: 'Dock' },
+                    { value: 'both', label: 'Both' },
+                  ] as const
+                ).map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={dockMode === opt.value}
+                    disabled={isSavingDockMode}
+                    onClick={() => void handleDockModeChange(opt.value)}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer whitespace-nowrap disabled:opacity-60 ${
+                      dockMode === opt.value
+                        ? 'bg-white dark:bg-zinc-900 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+              {dockMode === 'dock' && (
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  Closing the window keeps Radiarr playing. Click its Dock icon to reopen it, or right-click the Dock icon and choose Quit to stop it.
+                </p>
+              )}
+            </section>
+          )}
+
           {/* Section 1: Theme & Broadcast Clock Format */}
           <section className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 shadow-sm space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3">

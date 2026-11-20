@@ -94,6 +94,87 @@ const saveWindowState = (): void => {
   }
 };
 
+// macOS: where Radiarr appears (menu bar, Dock, or both). Default: menu bar only.
+type DockMode = 'menubar' | 'dock' | 'both';
+const DOCK_MODES: DockMode[] = ['menubar', 'dock', 'both'];
+const isMac = process.platform === 'darwin';
+
+const getDesktopSettingsFile = (): string =>
+  path.join(app.getPath('userData'), 'radiarr-desktop-settings.json');
+
+const loadDockMode = (): DockMode => {
+  try {
+    const file = getDesktopSettingsFile();
+    if (fs.existsSync(file)) {
+      const data = JSON.parse(fs.readFileSync(file, 'utf-8')) as { dockMode?: string };
+      if (DOCK_MODES.includes(data.dockMode as DockMode)) {
+        return data.dockMode as DockMode;
+      }
+    }
+  } catch (e) {
+    console.warn('Could not read desktop settings:', e);
+  }
+  return 'menubar';
+};
+
+const saveDockMode = (mode: DockMode): void => {
+  try {
+    const file = getDesktopSettingsFile();
+    let data: Record<string, unknown> = {};
+    if (fs.existsSync(file)) {
+      data = JSON.parse(fs.readFileSync(file, 'utf-8'));
+    }
+    data.dockMode = mode;
+    fs.writeFileSync(file, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.warn('Could not save desktop settings:', e);
+  }
+};
+
+let dockMode: DockMode = 'menubar';
+
+function showMainWindow(): void {
+  if (!mainWindow) return;
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.show();
+  mainWindow.focus();
+}
+
+/**
+ * Shows or hides the Dock icon and the menu bar icon to match `mode`.
+ * Only macOS has a Dock; other platforms always keep their tray icon.
+ */
+async function applyDockMode(mode: DockMode): Promise<void> {
+  dockMode = mode;
+  if (!isMac) return;
+
+  const wantsMenuBar = mode === 'menubar' || mode === 'both';
+  const wantsDock = mode === 'dock' || mode === 'both';
+  const windowWasVisible = Boolean(mainWindow?.isVisible());
+
+  if (wantsMenuBar && !tray) {
+    createTray();
+  } else if (!wantsMenuBar && tray) {
+    tray.destroy();
+    tray = null;
+  }
+
+  if (app.dock) {
+    if (wantsDock) {
+      await app.dock.show();
+    } else {
+      app.dock.hide();
+    }
+  }
+
+  // Switching Dock visibility can push the window behind other apps.
+  if (windowWasVisible) {
+    showMainWindow();
+  }
+
+  rebuildTrayMenu();
+}
+
 // SVG tray icon rendering
 function createTrayIcon(): Electron.NativeImage {
   // A clean 32x32 radio wave icon with transparent background and indigo accents
@@ -144,21 +225,58 @@ function createTray(): void {
   tray = new Tray(icon);
   tray.setToolTip('Radiarr - Virtual Live Radio');
 
+  rebuildTrayMenu();
+
+  tray.on('click', () => {
+    if (isMac) return; // macOS opens the menu on click
+    if (mainWindow) {
+      if (mainWindow.isVisible()) {
+        mainWindow.hide();
+      } else {
+        showMainWindow();
+      }
+    }
+  });
+
+  tray.on('double-click', () => {
+    showMainWindow();
+  });
+}
+
+function rebuildTrayMenu(): void {
+  if (!tray) return;
+
+  const showInItems: Electron.MenuItemConstructorOptions[] = isMac
+    ? [
+        {
+          label: 'Show Radiarr In',
+          submenu: [
+            { label: 'Menu Bar Only', value: 'menubar' },
+            { label: 'Dock Only', value: 'dock' },
+            { label: 'Menu Bar and Dock', value: 'both' },
+          ].map(({ label, value }) => ({
+            label,
+            type: 'radio' as const,
+            checked: dockMode === value,
+            click: () => {
+              saveDockMode(value as DockMode);
+              void applyDockMode(value as DockMode);
+            },
+          })),
+        },
+        { type: 'separator' },
+      ]
+    : [];
+
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: `Radiarr v0.8.0 (Active)`,
+      label: `Radiarr v${app.getVersion()}`,
       enabled: false,
     },
     { type: 'separator' },
     {
       label: 'Open Radiarr Window',
-      click: () => {
-        if (mainWindow) {
-          if (mainWindow.isMinimized()) mainWindow.restore();
-          mainWindow.show();
-          mainWindow.focus();
-        }
-      },
+      click: () => showMainWindow(),
     },
     {
       label: `Copy Web Stream URL (${SERVER_URL})`,
@@ -180,6 +298,7 @@ function createTray(): void {
       },
     },
     { type: 'separator' },
+    ...showInItems,
     {
       label: 'Quit Radiarr',
       click: () => {
@@ -190,26 +309,6 @@ function createTray(): void {
   ]);
 
   tray.setContextMenu(contextMenu);
-
-  tray.on('click', () => {
-    if (mainWindow) {
-      if (mainWindow.isVisible()) {
-        mainWindow.hide();
-      } else {
-        if (mainWindow.isMinimized()) mainWindow.restore();
-        mainWindow.show();
-        mainWindow.focus();
-      }
-    }
-  });
-
-  tray.on('double-click', () => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.show();
-      mainWindow.focus();
-    }
-  });
 }
 
 function createWindow(): void {
@@ -264,7 +363,11 @@ function createWindow(): void {
         hasShownTrayTip = true;
         new Notification({
           title: 'Radiarr is running in the background',
-          body: 'Your live radio stations and scheduled playback continue streaming in the system tray.',
+          body: isMac && dockMode === 'dock'
+            ? 'Your stations keep playing. Click Radiarr in the Dock to reopen it.'
+            : isMac
+              ? 'Your stations keep playing. Use the Radiarr icon in the menu bar to reopen it.'
+              : 'Your stations keep playing. Use the Radiarr icon in the system tray to reopen it.',
         }).show();
       }
     }
@@ -336,7 +439,20 @@ app.whenReady().then(async () => {
   }
 
   createWindow();
-  createTray();
+  if (isMac) {
+    await applyDockMode(loadDockMode());
+  } else {
+    createTray();
+  }
+
+  // macOS: menu bar / Dock preference, used by Settings > Appearance
+  ipcMain.handle('radiarr:get-dock-mode', () => (isMac ? dockMode : null));
+  ipcMain.handle('radiarr:set-dock-mode', async (_event, mode: string) => {
+    if (!isMac || !DOCK_MODES.includes(mode as DockMode)) return dockMode;
+    saveDockMode(mode as DockMode);
+    await applyDockMode(mode as DockMode);
+    return dockMode;
+  });
 
   // Native folder selection dialog handler
   ipcMain.handle('radiarr:pick-folder', async () => {
