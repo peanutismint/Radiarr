@@ -35,7 +35,7 @@ You spent years building a music collection. So why do you still end up:
 2. Playing the same comfort playlist for the 400th time?
 3. Giving up and letting a streaming algorithm choose?
 
-Radiarr is like [Tunarr](https://github.com/chrisbenincasa/tunarr), but for music. You describe the stations you want ("70s soft rock", "everything by Led Zeppelin in order", "chill in the morning, loud in the afternoon") and Radiarr keeps them on air forever. Tune in and you land mid-song, exactly where that station is on the clock. Don't like the song? Flip to the next station, the way you would in a car.
+Radiarr is like [Tunarr](https://github.com/chrisbenincasa/tunarr), but for music. You build the stations you want ("80s soft rock", "albums by Jimmy Eat World in chronological order", "chill in the morning, loud in the afternoon") and Radiarr keeps them on air forever. Tune in and you land mid-song, exactly where that station is on the clock. Don't like the song? Flip to the next station, the way you would in a car.
 
 ## Features
 
