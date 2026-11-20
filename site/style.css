@@ -61,6 +61,15 @@ p { margin: 0 0 1em; }
 .nav-links > a:not(.btn) { text-decoration: none; color: var(--muted); }
 .nav-links > a:not(.btn):hover { color: var(--text); }
 
+.nav-links { gap: 22px; }
+.btn-icon { position: relative; padding: .55em .65em; margin-right: -12px; }
+.cup { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; transition: stroke .15s; }
+.btn-icon:hover .cup, .btn-icon:focus-visible .cup { stroke: #c7d2fe; }
+[data-tip]::after { content: attr(data-tip); position: absolute; top: calc(100% + 10px); left: 50%; transform: translate(-50%, -4px); white-space: nowrap;
+  padding: .45em .75em; border-radius: 8px; background: #1e1e2c; border: 1px solid #34344a; color: var(--text); font: 500 .8rem/1 var(--sans);
+  box-shadow: 0 10px 24px -8px rgba(0, 0, 0, .7); opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; }
+[data-tip]:hover::after, [data-tip]:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+
 /* Hero */
 .hero { position: relative; overflow: hidden; padding: 84px 0 90px; }
 .glow { position: absolute; inset: -20% -10% auto; height: 900px; pointer-events: none;
